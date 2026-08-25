@@ -1016,6 +1016,13 @@
             </button>
 
             <button 
+              @click="activeLessonTab = 'tools'"
+              :class="activeLessonTab === 'tools' ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 font-bold shadow-sm' : 'text-slate-400 hover:text-amber-300 hover:bg-slate-800/60 border-transparent'"
+              class="px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap flex items-center gap-1.5">
+              <span>🧰</span> 必备工具与下载
+            </button>
+
+            <button 
               @click="activeLessonTab = 'sandbox'"
               :class="activeLessonTab === 'sandbox' ? 'bg-purple-500/20 text-purple-300 border-purple-500/60 font-bold shadow-sm' : 'text-slate-400 hover:text-purple-300 hover:bg-slate-800/60 border-transparent'"
               class="px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap flex items-center gap-1.5">
@@ -1058,6 +1065,66 @@
             <div v-if="activeLesson.detailedLecture" 
                  class="markdown-body p-5 rounded-xl bg-slate-950 border border-slate-800 shadow-inner"
                  v-html="renderMarkdown(activeLesson.detailedLecture)">
+            </div>
+          </div>
+
+          <!-- TAB: 必备工具与安全下载 (Tools & Download Links) -->
+          <div v-if="activeLessonTab === 'tools'" class="space-y-4">
+            <div class="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200 leading-relaxed flex items-center justify-between">
+              <div>
+                <span class="font-bold text-amber-300 block mb-0.5">🧰 本课实战必备武器库:</span>
+                已为零基础学员甄选本课实操所需的官方安全工具，提供小白通俗说明、免踩坑安装指引与官方下载通道。
+              </div>
+              <span class="text-amber-400 font-mono font-bold text-sm shrink-0 ml-3">共 {{ activeLesson.tools?.length || 0 }} 款工具</span>
+            </div>
+
+            <div v-if="activeLesson.tools && activeLesson.tools.length > 0" class="grid grid-cols-1 gap-3.5">
+              <div 
+                v-for="t in activeLesson.tools" :key="t.name"
+                class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/50 space-y-3 transition-all">
+                
+                <!-- 工具标题与分类徽章 -->
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <span class="font-bold text-sm text-slate-100">{{ t.name }}</span>
+                      <span v-if="t.isOfficial" class="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-medium">官方安全</span>
+                      <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">{{ t.category }}</span>
+                    </div>
+                  </div>
+                  
+                  <a 
+                    :href="t.downloadUrl" 
+                    target="_blank" 
+                    class="px-3.5 py-1.5 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-slate-950 font-bold rounded-lg text-xs whitespace-nowrap shadow-md shadow-amber-500/10 flex items-center gap-1 shrink-0">
+                    <span>🚀 官方安全下载</span>
+                  </a>
+                </div>
+
+                <!-- 零基础白话说明 -->
+                <div class="p-3 rounded-lg bg-black/50 border border-slate-800/80 space-y-1 text-xs">
+                  <span class="font-bold text-cyan-300 block">📌 零基础白话说明:</span>
+                  <p class="text-slate-300 leading-relaxed">{{ t.purpose }}</p>
+                </div>
+
+                <!-- 小白安装指引与下载地址复制 -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 text-xs">
+                  <div class="md:col-span-8 p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 text-slate-400 leading-relaxed">
+                    <strong class="text-amber-300 font-medium">⚡ 新手安装指引:</strong> {{ t.guide }}
+                  </div>
+                  <div class="md:col-span-4 p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-1 truncate">
+                    <span class="font-mono text-[11px] text-slate-400 truncate">{{ t.downloadUrl }}</span>
+                    <button @click="copyToClipboard(t.downloadUrl)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-cyan-300 rounded text-[10px] shrink-0">
+                      复制链接
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+            <div v-else class="text-center py-8 text-slate-500 italic">
+              本课时使用浏览器内置开发者工具 (F12) 或操作系统自带命令行即可完成实操，无需额外安装第三方软件。
             </div>
           </div>
 

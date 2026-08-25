@@ -11,7 +11,7 @@ const app = createApp({
     const searchQuery = ref("");
     const selectedStageFilter = ref("all");
     const activeLesson = ref(null); // 当前查看详情的课程
-    const activeLessonTab = ref("lecture"); // 'lecture' | 'sandbox' | 'lab' | 'checklist' | 'files'
+    const activeLessonTab = ref("lecture"); // 'lecture' | 'tools' | 'sandbox' | 'lab' | 'checklist' | 'files'
 
     // 学习进度记录 (保存在 localStorage)
     const completedLessons = ref(JSON.parse(localStorage.getItem("websec_completed_lessons") || "[]"));
