@@ -402,9 +402,37 @@ const app = createApp({
       delete quizResults.value[activeQuizStage.value.stageId];
     };
 
+    // --------------------------------------------------------------------
+    // 课时专属必备工具与网站筛选/搜索逻辑
+    // --------------------------------------------------------------------
+    const lessonToolsFilter = ref("all"); // 'all' | 'software' | 'websites'
+    const lessonToolsSearch = ref("");
+
+    const currentLessonSoftwareTools = computed(() => {
+      if (!activeLesson.value || !activeLesson.value.tools) return [];
+      let list = activeLesson.value.tools.filter(t => !t.isWebsite);
+      if (lessonToolsSearch.value.trim()) {
+        const q = lessonToolsSearch.value.toLowerCase().trim();
+        list = list.filter(t => (t.name || "").toLowerCase().includes(q) || (t.category || "").toLowerCase().includes(q) || (t.purpose || "").toLowerCase().includes(q));
+      }
+      return list;
+    });
+
+    const currentLessonWebsiteTools = computed(() => {
+      if (!activeLesson.value || !activeLesson.value.tools) return [];
+      let list = activeLesson.value.tools.filter(t => t.isWebsite);
+      if (lessonToolsSearch.value.trim()) {
+        const q = lessonToolsSearch.value.toLowerCase().trim();
+        list = list.filter(t => (t.name || "").toLowerCase().includes(q) || (t.category || "").toLowerCase().includes(q) || (t.purpose || "").toLowerCase().includes(q));
+      }
+      return list;
+    });
+
     const openLessonDetail = (lesson) => {
       activeLesson.value = lesson;
       activeLessonTab.value = "lecture";
+      lessonToolsFilter.value = "all";
+      lessonToolsSearch.value = "";
     };
 
     const closeLessonDetail = () => {
@@ -527,7 +555,12 @@ const app = createApp({
       quizResults,
       selectAnswer,
       submitQuiz,
-      resetQuiz
+      resetQuiz,
+      // 课时工具与网站目录
+      lessonToolsFilter,
+      lessonToolsSearch,
+      currentLessonSoftwareTools,
+      currentLessonWebsiteTools
     };
   }
 });

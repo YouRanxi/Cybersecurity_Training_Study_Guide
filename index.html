@@ -1069,65 +1069,186 @@
           </div>
 
           <!-- TAB: 必备工具与安全下载 (Tools & Download Links) -->
-          <div v-if="activeLessonTab === 'tools'" class="space-y-4">
-            <div class="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200 leading-relaxed flex items-center justify-between">
-              <div>
-                <span class="font-bold text-amber-300 block mb-0.5">🧰 本课实战必备武器库与在线平台:</span>
-                已为零基础学员精选本课实操所需的官方安全工具与在线查询网站，提供小白通俗说明、免踩坑指引与官方直达通道。
+          <div v-if="activeLessonTab === 'tools'" class="space-y-5">
+            
+            <!-- 顶部工具概览与分类搜索栏 (Overview, Filter Pills & Search) -->
+            <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3 shadow-md">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div>
+                  <h4 class="font-bold text-sm text-slate-100 flex items-center gap-2">
+                    <span>🧰</span> 本课实战武器库与在线平台目录
+                  </h4>
+                  <p class="text-xs text-slate-400 mt-0.5">已根据官方课件精选分类，提供白话说明、免踩坑指引与官方安全直达入口。</p>
+                </div>
+
+                <!-- 搜索框 -->
+                <div class="relative min-w-[200px] sm:min-w-[240px]">
+                  <input 
+                    v-model="lessonToolsSearch" 
+                    type="text" 
+                    placeholder="🔍 搜索本课工具/平台 (如 Nmap, Ping...)" 
+                    class="w-full bg-black/60 text-xs text-slate-200 placeholder-slate-500 px-3 py-1.5 rounded-lg border border-slate-700 focus:border-amber-500 focus:outline-none pr-7">
+                  <button v-if="lessonToolsSearch" @click="lessonToolsSearch = ''" class="absolute right-2 top-1.5 text-xs text-slate-500 hover:text-slate-300">✕</button>
+                </div>
               </div>
-              <span class="text-amber-400 font-mono font-bold text-sm shrink-0 ml-3">共 {{ activeLesson.tools?.length || 0 }} 款工具/网站</span>
+
+              <!-- 分类筛选胶囊 -->
+              <div class="flex items-center gap-2 pt-1 border-t border-slate-800/80 flex-wrap">
+                <button 
+                  @click="lessonToolsFilter = 'all'"
+                  :class="lessonToolsFilter === 'all' ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 font-bold' : 'text-slate-400 hover:text-slate-200 bg-slate-950/60 border-slate-800'"
+                  class="px-3 py-1 rounded-lg border text-xs transition-all flex items-center gap-1.5">
+                  <span>📂 全部资源</span>
+                  <span class="font-mono text-[10px] px-1.5 py-0.2 rounded bg-black/50 text-slate-300">
+                    {{ (activeLesson.tools || []).length }}
+                  </span>
+                </button>
+
+                <button 
+                  @click="lessonToolsFilter = 'software'"
+                  :class="lessonToolsFilter === 'software' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/60 font-bold' : 'text-slate-400 hover:text-slate-200 bg-slate-950/60 border-slate-800'"
+                  class="px-3 py-1 rounded-lg border text-xs transition-all flex items-center gap-1.5">
+                  <span>🚀 核心渗透软件</span>
+                  <span class="font-mono text-[10px] px-1.5 py-0.2 rounded bg-black/50 text-emerald-300">
+                    {{ (activeLesson.tools || []).filter(t => !t.isWebsite).length }}
+                  </span>
+                </button>
+
+                <button 
+                  @click="lessonToolsFilter = 'websites'"
+                  :class="lessonToolsFilter === 'websites' ? 'bg-sky-500/20 text-sky-300 border-sky-500/60 font-bold' : 'text-slate-400 hover:text-slate-200 bg-slate-950/60 border-slate-800'"
+                  class="px-3 py-1 rounded-lg border text-xs transition-all flex items-center gap-1.5">
+                  <span>🌐 在线查询平台与网站</span>
+                  <span class="font-mono text-[10px] px-1.5 py-0.2 rounded bg-black/50 text-sky-300">
+                    {{ (activeLesson.tools || []).filter(t => t.isWebsite).length }}
+                  </span>
+                </button>
+              </div>
             </div>
 
-            <div v-if="activeLesson.tools && activeLesson.tools.length > 0" class="grid grid-cols-1 gap-3.5">
-              <div 
-                v-for="t in activeLesson.tools" :key="t.name"
-                class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/50 space-y-3 transition-all">
-                
-                <!-- 工具标题与分类徽章 -->
-                <div class="flex items-start justify-between gap-3">
-                  <div>
-                    <div class="flex items-center gap-2 mb-1 flex-wrap">
-                      <span class="font-bold text-sm text-slate-100">{{ t.name }}</span>
-                      <span v-if="t.isWebsite" class="text-[10px] px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-medium">🌐 在线网站/平台</span>
-                      <span v-else class="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-medium">🚀 官方软件/工具</span>
-                      <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">{{ t.category }}</span>
+            <!-- 空搜索结果状态 -->
+            <div v-if="currentLessonSoftwareTools.length === 0 && currentLessonWebsiteTools.length === 0" class="text-center py-12 rounded-xl bg-slate-900/40 border border-slate-800 space-y-2">
+              <span class="text-3xl block">🔍</span>
+              <p class="text-xs text-slate-400">未找到与 "{{ lessonToolsSearch }}" 匹配的工具或平台</p>
+              <button @click="lessonToolsSearch = ''; lessonToolsFilter = 'all'" class="text-xs text-amber-400 hover:underline">清空搜索条件</button>
+            </div>
+
+            <!-- 分组 1: 核心渗透软件与本地工具 (Core Software) -->
+            <div v-if="(lessonToolsFilter === 'all' || lessonToolsFilter === 'software') && currentLessonSoftwareTools.length > 0" class="space-y-3">
+              <div class="flex items-center justify-between border-b border-emerald-900/40 pb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="p-1 rounded bg-emerald-950 border border-emerald-800 text-xs">🚀</span>
+                  <h4 class="font-bold text-xs text-emerald-300 uppercase tracking-wider">核心必备渗透软件 / 本地客户端</h4>
+                </div>
+                <span class="text-[11px] text-emerald-400/80 font-mono">{{ currentLessonSoftwareTools.length }} 款软件</span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div 
+                  v-for="t in currentLessonSoftwareTools" :key="t.name"
+                  class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/50 space-y-3 transition-all flex flex-col justify-between shadow-sm">
+                  
+                  <div class="space-y-2.5">
+                    <!-- 标题行 -->
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="min-w-0 flex-1">
+                        <span class="font-bold text-xs sm:text-sm text-slate-100 block leading-tight truncate" :title="t.name">{{ t.name }}</span>
+                        <div class="flex items-center gap-1.5 mt-1">
+                          <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-medium">软件/工具</span>
+                          <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">{{ t.category }}</span>
+                        </div>
+                      </div>
+
+                      <a 
+                        :href="t.downloadUrl" 
+                        target="_blank" 
+                        class="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-lg text-xs whitespace-nowrap shadow-md shadow-emerald-500/20 flex items-center gap-1 shrink-0 transition-transform active:scale-95">
+                        <span>下载 ↗</span>
+                      </a>
+                    </div>
+
+                    <!-- 零基础白话说明 -->
+                    <div class="p-2.5 rounded-lg bg-black/40 border border-slate-800/80 space-y-1 text-xs text-slate-300 leading-relaxed">
+                      <strong class="text-cyan-300 font-medium block">📌 小白通俗说明:</strong>
+                      {{ t.purpose }}
+                    </div>
+
+                    <!-- 安装指引 -->
+                    <div class="p-2 rounded-lg bg-slate-950/60 text-[11px] text-slate-400 leading-relaxed">
+                      <strong class="text-emerald-300 font-medium">⚡ 新手安装指引:</strong> {{ t.guide }}
                     </div>
                   </div>
-                  
-                  <a 
-                    :href="t.downloadUrl" 
-                    target="_blank" 
-                    :class="t.isWebsite ? 'bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white shadow-sky-500/20' : 'bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-slate-950 shadow-amber-500/20'"
-                    class="px-3.5 py-1.5 font-bold rounded-lg text-xs whitespace-nowrap shadow-md flex items-center gap-1 shrink-0 transition-transform active:scale-95">
-                    <span>{{ t.isWebsite ? '🌐 访问在线平台 ↗' : '🚀 官方安全下载 ↗' }}</span>
-                  </a>
-                </div>
 
-                <!-- 零基础白话说明 -->
-                <div class="p-3 rounded-lg bg-black/50 border border-slate-800/80 space-y-1 text-xs">
-                  <span class="font-bold text-cyan-300 block">📌 零基础白话说明:</span>
-                  <p class="text-slate-300 leading-relaxed">{{ t.purpose }}</p>
-                </div>
-
-                <!-- 小白安装/使用指引与网址复制 -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 text-xs">
-                  <div class="md:col-span-8 p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 text-slate-400 leading-relaxed">
-                    <strong :class="t.isWebsite ? 'text-sky-300' : 'text-amber-300'" class="font-medium">⚡ {{ t.isWebsite ? '使用方法指引:' : '新手安装指引:' }}</strong> {{ t.guide }}
+                  <!-- 复制下载链接 -->
+                  <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2 text-[11px]">
+                    <span class="font-mono text-slate-500 truncate text-[11px]">{{ t.downloadUrl }}</span>
+                    <button @click="copyToClipboard(t.downloadUrl)" class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 rounded text-[10px] shrink-0">
+                      复制链接
+                    </button>
                   </div>
-                  <div class="md:col-span-4 p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-1 truncate">
-                    <span class="font-mono text-[11px] text-slate-400 truncate">{{ t.downloadUrl }}</span>
-                    <button @click="copyToClipboard(t.downloadUrl)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-cyan-300 rounded text-[10px] shrink-0">
+
+                </div>
+              </div>
+            </div>
+
+            <!-- 分组 2: 讲义涉及在线平台与查询网站 (Online Platforms & Portals) -->
+            <div v-if="(lessonToolsFilter === 'all' || lessonToolsFilter === 'websites') && currentLessonWebsiteTools.length > 0" class="space-y-3">
+              <div class="flex items-center justify-between border-b border-sky-900/40 pb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="p-1 rounded bg-sky-950 border border-sky-800 text-xs">🌐</span>
+                  <h4 class="font-bold text-xs text-sky-300 uppercase tracking-wider">讲义涉及在线平台 / 官方网站 / 知识库</h4>
+                </div>
+                <span class="text-[11px] text-sky-400/80 font-mono">{{ currentLessonWebsiteTools.length }} 个在线网站</span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div 
+                  v-for="t in currentLessonWebsiteTools" :key="t.name"
+                  class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-sky-500/50 space-y-2.5 transition-all flex flex-col justify-between shadow-sm">
+                  
+                  <div class="space-y-2">
+                    <!-- 标题行 -->
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="min-w-0 flex-1">
+                        <span class="font-bold text-xs sm:text-sm text-slate-100 block leading-tight truncate" :title="t.name">{{ t.name }}</span>
+                        <div class="flex items-center gap-1.5 mt-1">
+                          <span class="text-[10px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-medium">在线平台</span>
+                          <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">{{ t.category }}</span>
+                        </div>
+                      </div>
+
+                      <a 
+                        :href="t.downloadUrl" 
+                        target="_blank" 
+                        class="px-3 py-1.5 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold rounded-lg text-xs whitespace-nowrap shadow-md shadow-sky-500/20 flex items-center gap-1 shrink-0 transition-transform active:scale-95">
+                        <span>访问 ↗</span>
+                      </a>
+                    </div>
+
+                    <!-- 白话说明 -->
+                    <div class="p-2 rounded-lg bg-black/40 border border-slate-800/80 text-xs text-slate-300 leading-relaxed">
+                      <strong class="text-sky-300 font-medium block">📌 用途:</strong>
+                      {{ t.purpose }}
+                    </div>
+
+                    <!-- 使用指引 -->
+                    <div class="p-2 rounded-lg bg-slate-950/60 text-[11px] text-slate-400 leading-relaxed">
+                      <strong class="text-sky-300 font-medium">⚡ 操作指引:</strong> {{ t.guide }}
+                    </div>
+                  </div>
+
+                  <!-- 复制网址 -->
+                  <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2 text-[11px]">
+                    <span class="font-mono text-slate-500 truncate text-[11px]">{{ t.downloadUrl }}</span>
+                    <button @click="copyToClipboard(t.downloadUrl)" class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 rounded text-[10px] shrink-0">
                       复制网址
                     </button>
                   </div>
-                </div>
 
+                </div>
               </div>
             </div>
-            
-            <div v-else class="text-center py-8 text-slate-500 italic">
-              本课时使用浏览器内置开发者工具 (F12) 或操作系统自带命令行即可完成实操，无需额外安装第三方软件。
-            </div>
+
           </div>
 
           <!-- TAB 2: 武器打靶实操与 Flag 提交 (含任务简报) -->
