@@ -1052,21 +1052,75 @@
           </div>
         </div>
 
-        <!-- 弹窗可滚动内容区 (Scrollable Body) -->
-        <div class="p-6 overflow-y-auto flex-1 space-y-4 text-xs">
+        <!-- 弹窗主体区 (包含左侧悬浮抽屉与可滚动内容区) -->
+        <div class="relative flex-1 overflow-hidden flex flex-col">
           
-          <!-- TAB 1: 核心深度讲义 (Markdown 渲染) -->
-          <div v-if="activeLessonTab === 'lecture'" class="space-y-4">
-            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 leading-relaxed">
-              <span class="font-bold text-cyan-400 block mb-1">🎯 本课学习目标与导读:</span>
-              {{ activeLesson.summary }}
+          <!-- 📑 左侧小节大纲抽屉 (仅在核心深度讲义TAB且存在目录时生效：平时自动收起为小标签，鼠标悬停时自动平滑滑出展示，点击小节平滑跳转) -->
+          <div 
+            v-if="activeLessonTab === 'lecture' && currentLessonToc.length > 0"
+            @mouseenter="isTocDrawerOpen = true"
+            @mouseleave="isTocDrawerOpen = false"
+            :class="isTocDrawerOpen ? 'translate-x-0 shadow-2xl shadow-cyan-950/90' : '-translate-x-[calc(100%-28px)] opacity-85 hover:opacity-100'"
+            class="absolute left-0 top-3 bottom-3 z-40 flex items-stretch transition-transform duration-300 ease-out pointer-events-auto">
+            
+            <!-- 抽屉内容面板 -->
+            <div class="w-64 sm:w-80 bg-slate-950/95 border-y border-r border-cyan-500/40 rounded-r-2xl backdrop-blur-xl shadow-2xl flex flex-col overflow-hidden">
+              <!-- 目录头部 -->
+              <div class="p-3.5 border-b border-slate-800/90 bg-slate-900/90 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-cyan-400 font-bold">📑</span>
+                  <span class="font-bold text-xs text-cyan-200">讲义小节大纲 ({{ currentLessonToc.length }})</span>
+                </div>
+                <span class="text-[10px] text-cyan-400/90 font-mono bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-800/60">点击直达 ⚡</span>
+              </div>
+              
+              <!-- 目录列表 (滚动) -->
+              <div class="p-2 space-y-1 overflow-y-auto flex-1 text-xs">
+                <button 
+                  v-for="item in currentLessonToc" :key="item.id"
+                  @click="scrollToLectureSection(item.id)"
+                  :class="{
+                    'bg-cyan-500/25 text-cyan-200 border-cyan-500 font-bold shadow-sm ring-1 ring-cyan-500/30': activeTocId === item.id,
+                    'text-slate-400 hover:text-slate-100 hover:bg-slate-900 border-transparent': activeTocId !== item.id,
+                    'font-bold text-cyan-300 border-l-2 border-cyan-400 pl-2': item.title.startsWith('💡') || item.title.startsWith('一、') || item.title.startsWith('二、') || item.title.startsWith('三、') || item.title.startsWith('四、') || item.title.startsWith('五、') || item.title.startsWith('六、'),
+                    'pl-4 font-semibold text-slate-200': item.title.match(/^\d+\./),
+                    'pl-6 text-slate-400 text-[11px]': item.title.match(/^\(\d+\)/) || item.level > 4
+                  }"
+                  class="w-full text-left py-1.5 px-2 rounded-lg border transition-all truncate block text-[11.5px] leading-snug">
+                  {{ item.title }}
+                </button>
+              </div>
+
+              <!-- 底部提示 -->
+              <div class="p-2 border-t border-slate-800/60 bg-black/50 text-[10px] text-slate-500 flex items-center justify-between px-3">
+                <span>💡 鼠标移出自动隐藏</span>
+                <span class="text-cyan-400 font-mono">快速导航 ➔</span>
+              </div>
             </div>
 
-            <div v-if="activeLesson.detailedLecture" 
-                 class="markdown-body p-5 rounded-xl bg-slate-950 border border-slate-800 shadow-inner"
-                 v-html="renderMarkdown(activeLesson.detailedLecture)">
+            <!-- 侧边把手标签 (未展开时露出的呼吸标签) -->
+            <div class="w-7 flex flex-col items-center justify-center bg-gradient-to-b from-cyan-950 via-slate-900 to-cyan-950 hover:from-cyan-900 hover:to-slate-800 border-y border-r border-cyan-500/60 rounded-r-xl cursor-pointer shadow-xl text-cyan-300 shrink-0 select-none transition-colors">
+              <span class="text-xs mb-1">📑</span>
+              <span class="text-[10px] font-bold tracking-widest writing-vertical text-cyan-300 py-1.5">讲义章节</span>
+              <span class="text-[9px] text-cyan-400 animate-pulse mt-1">▶</span>
             </div>
           </div>
+
+          <!-- 弹窗可滚动内容区 (Scrollable Body) -->
+          <div id="lessonModalScrollBody" class="p-6 overflow-y-auto flex-1 space-y-4 text-xs">
+            
+            <!-- TAB 1: 核心深度讲义 (Markdown 渲染) -->
+            <div v-if="activeLessonTab === 'lecture'" class="space-y-4">
+              <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 leading-relaxed">
+                <span class="font-bold text-cyan-400 block mb-1">🎯 本课学习目标与导读:</span>
+                {{ activeLesson.summary }}
+              </div>
+
+              <div v-if="activeLesson.detailedLecture" 
+                   class="markdown-body p-5 rounded-xl bg-slate-950 border border-slate-800 shadow-inner"
+                   v-html="renderMarkdown(activeLesson.detailedLecture)">
+              </div>
+            </div>
 
           <!-- TAB: 必备工具与安全下载 (Tools & Download Links) -->
           <div v-if="activeLessonTab === 'tools'" class="space-y-5">

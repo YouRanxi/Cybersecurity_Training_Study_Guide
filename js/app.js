@@ -146,18 +146,75 @@ const app = createApp({
     };
 
     // --------------------------------------------------------------------
-    // Markdown 渲染引擎
+    // 讲义小节大纲 (TOC) 与 Markdown 渲染引擎
     // --------------------------------------------------------------------
+    const isTocDrawerOpen = ref(false);
+    const activeTocId = ref("");
+
+    // 辅助生成唯一规范的锚点 ID
+    const generateHeadingId = (idx, text) => {
+      const clean = (text || "")
+        .replace(/<[^>]+>/g, "")
+        .replace(/\*\*/g, "")
+        .replace(/`/g, "")
+        .trim();
+      const slug = clean
+        .replace(/[^\w\u4e00-\u9fa5]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .toLowerCase();
+      return `sec-${idx}-${slug || "part"}`;
+    };
+
+    // 提取当前课时的大纲目录结构
+    const currentLessonToc = computed(() => {
+      if (!activeLesson.value || !activeLesson.value.detailedLecture) return [];
+      const text = activeLesson.value.detailedLecture;
+      const lines = text.split("\n");
+      const toc = [];
+      let headingIndex = 0;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const m = line.match(/^(#{2,4})\s+(.+)$/);
+        if (m) {
+          const depth = m[1].length; // 2: H2, 3: H3, 4: H4
+          const rawTitle = m[2].trim();
+          const cleanTitle = rawTitle.replace(/\*\*/g, "").replace(/`/g, "").trim();
+          const id = generateHeadingId(headingIndex, cleanTitle);
+          toc.push({
+            id,
+            level: depth,
+            title: cleanTitle,
+            idx: headingIndex
+          });
+          headingIndex++;
+        }
+      }
+      return toc;
+    });
+
+    // 渲染 Markdown 并自动注入精确匹配的锚点 ID
     const renderMarkdown = (content) => {
       if (!content) return "";
-      if (window.marked && typeof window.marked.parse === 'function') {
+      let headingIndex = 0;
+
+      if (window.marked && typeof window.marked.parse === "function") {
         try {
-          return window.marked.parse(content);
+          const renderer = new window.marked.Renderer();
+          renderer.heading = function({ text, depth }) {
+            const cleanText = text.replace(/<[^>]+>/g, "").replace(/\*\*/g, "").replace(/`/g, "").trim();
+            const id = generateHeadingId(headingIndex, cleanText);
+            headingIndex++;
+            return `<h${depth} id="${id}" class="scroll-mt-lesson font-bold group relative">${text} <a href="#${id}" class="opacity-0 group-hover:opacity-40 text-cyan-400 ml-1 text-xs">#</a></h${depth}>`;
+          };
+          return window.marked.parse(content, { renderer });
         } catch (e) {
           console.error("Marked parse error:", e);
         }
       }
 
+      // Fallback 正则渲染
+      headingIndex = 0;
       let html = content;
       html = html.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (match, lang, code) => {
         const escaped = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -167,14 +224,33 @@ const app = createApp({
         const escaped = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         return `<code>${escaped}</code>`;
       });
-      html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
-      html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-      html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-      html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+      html = html.replace(/^(#{2,4})\s+(.*$)/gim, (match, hashes, title) => {
+        const depth = hashes.length;
+        const cleanText = title.replace(/\*\*/g, "").replace(/`/g, "").trim();
+        const id = generateHeadingId(headingIndex, cleanText);
+        headingIndex++;
+        return `<h${depth} id="${id}" class="scroll-mt-lesson font-bold group relative">${title}</h${depth}>`;
+      });
       html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
       html = html.replace(/\n\n+/g, '<br><br>');
       return html;
+    };
+
+    // 平滑跳转至讲义指定小节
+    const scrollToLectureSection = (id) => {
+      activeTocId.value = id;
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        el.classList.remove("toc-highlight-pulse");
+        // 重新触发动画
+        void el.offsetWidth;
+        el.classList.add("toc-highlight-pulse");
+        setTimeout(() => {
+          el.classList.remove("toc-highlight-pulse");
+        }, 3000);
+      }
     };
 
     // --------------------------------------------------------------------
@@ -560,9 +636,15 @@ const app = createApp({
       lessonToolsFilter,
       lessonToolsSearch,
       currentLessonSoftwareTools,
-      currentLessonWebsiteTools
+      currentLessonWebsiteTools,
+      // 讲义目录与小节大纲跳转
+      isTocDrawerOpen,
+      activeTocId,
+      currentLessonToc,
+      scrollToLectureSection
     };
   }
 });
 
 app.mount("#app");
+
