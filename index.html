@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSec 交互式可视化学习平台 (作战任务驱动版)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Vue 3 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+  <!-- Marked.js Markdown 解析器 -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyberDark: '#0a0f1d',
+            cyberCard: 'rgba(15, 23, 42, 0.8)',
+            cyberBorder: 'rgba(56, 189, 248, 0.2)',
+            cyberCyan: '#00f2fe',
+            cyberBlue: '#38bdf8',
+            cyberPurple: '#a855f7',
+            cyberGreen: '#10b981',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="text-slate-200 antialiased selection:bg-cyan-500 selection:text-white pb-16">
+
+  <div id="app" v-cloak class="min-h-screen flex flex-col">
+    <!-- 顶部导航栏 (双层清晰布局，彻底解决挤压拥挤问题) -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-slate-800/80 px-4 lg:px-8 py-2.5 transition-all">
+      <div class="max-w-7xl mx-auto space-y-2.5">
+        
+        <!-- 第一行：品牌 Logo 与用户黑客段位/积分看板 -->
+        <div class="flex items-center justify-between gap-4">
+          <!-- Logo 与标题 -->
+          <div class="flex items-center space-x-2.5 cursor-pointer" @click="currentTab = 'roadmap'">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 via-blue-600 to-purple-600 flex items-center justify-center shadow-md shadow-cyan-500/20 text-white font-bold text-base">
+              ⚡
+            </div>
+            <div class="flex items-baseline gap-2.5">
+              <h1 class="font-black text-base lg:text-lg tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-sky-300 to-purple-400">
+                WebSec 交互式可视化学习平台
+              </h1>
+              <span class="text-[11px] text-slate-400 hidden sm:inline">62 门靶场实战任务简报 · 3 大武器打靶 · 🚩 全自动 CTF 夺旗判题</span>
+            </div>
+          </div>
+
+          <!-- 右侧：段位与积分状态看板 (宽敞独立，绝不拥挤) -->
+          <div class="flex items-center gap-2.5 shrink-0">
+            <div class="px-3 py-1 rounded-xl border text-xs font-bold font-mono flex items-center gap-1.5 shadow-sm" :class="hackerRank.color">
+              <span>{{ hackerRank.title }}</span>
+            </div>
+
+            <div class="px-3 py-1 rounded-xl bg-slate-900/90 border border-slate-800 text-xs font-mono flex items-center gap-2">
+              <span class="text-slate-400">🏆 积分:</span>
+              <span class="text-amber-400 font-bold">{{ totalScore }} 分</span>
+              <span class="text-slate-500">| 通关: <strong class="text-emerald-400">{{ solvedCount }}</strong>/62</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 第二行：主功能导航选项卡栏 (从容平铺，触手可及) -->
+        <nav class="flex items-center space-x-1.5 overflow-x-auto pb-0.5 pt-1 border-t border-slate-800/60">
+          <button 
+            @click="currentTab = 'roadmap'"
+            :class="currentTab === 'roadmap' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 font-bold shadow-md shadow-cyan-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border-transparent'"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 whitespace-nowrap">
+            <span>📚</span> 课程图谱 (62课)
+          </button>
+
+          <button 
+            @click="currentTab = 'simulators'"
+            :class="currentTab === 'simulators' ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 font-bold shadow-md shadow-purple-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border-transparent'"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 whitespace-nowrap">
+            <span>🚩</span> 武器打靶夺旗
+          </button>
+
+          <button 
+            @click="currentTab = 'audit'"
+            :class="currentTab === 'audit' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 font-bold shadow-md shadow-emerald-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border-transparent'"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 whitespace-nowrap">
+            <span>🔍</span> 源码“写挖补”
+          </button>
+
+          <button 
+            @click="currentTab = 'cheatsheet'"
+            :class="currentTab === 'cheatsheet' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 font-bold shadow-md shadow-amber-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border-transparent'"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 whitespace-nowrap">
+            <span>🧰</span> 渗透武器库
+          </button>
+
+          <button 
+            @click="currentTab = 'tools'"
+            :class="currentTab === 'tools' ? 'bg-sky-500/20 text-sky-300 border-sky-500/50 font-bold shadow-md shadow-sky-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border-transparent'"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 whitespace-nowrap">
+            <span>⚙️</span> 编解码工具箱
+          </button>
+
+          <button 
+            @click="currentTab = 'assessment'"
+            :class="currentTab === 'assessment' ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 font-bold shadow-md shadow-rose-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border-transparent'"
+            class="px-3.5 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 whitespace-nowrap">
+            <span>🏆</span> 阶段考核
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="max-w-7xl mx-auto w-full px-4 lg:px-8 py-6 flex-1">
+
+      <!-- ================================================================ -->
+      <!-- VIEW 1: 课程全景图谱 (Roadmap & Lessons) -->
+      <!-- ================================================================ -->
+      <section v-if="currentTab === 'roadmap'" class="space-y-6">
+        <!-- 统计与过滤条 -->
+        <div class="glass-panel p-5 rounded-2xl flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div class="flex items-center gap-4 flex-wrap">
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400">阶段筛选:</span>
+              <div class="flex gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+                <button 
+                  @click="selectedStageFilter = 'all'"
+                  :class="selectedStageFilter === 'all' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' : 'text-slate-400 hover:text-slate-200 border-transparent'"
+                  class="px-3 py-1 rounded-lg text-xs font-medium border transition-all">
+                  全部 62 课
+                </button>
+                <button 
+                  v-for="s in allStages" :key="s.id"
+                  @click="selectedStageFilter = s.id"
+                  :class="selectedStageFilter === s.id ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' : 'text-slate-400 hover:text-slate-200 border-transparent'"
+                  class="px-2.5 py-1 rounded-lg text-xs font-medium border transition-all">
+                  {{ s.badge }}
+                </button>
+              </div>
+            </div>
+
+            <!-- 进度统计 -->
+            <div class="hidden sm:flex items-center gap-2 text-xs bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800">
+              <span class="text-slate-400">已夺旗通关:</span>
+              <span class="text-emerald-400 font-bold font-mono">{{ solvedCount }} / {{ allLessons.length }}</span>
+              <div class="w-16 bg-slate-700 h-1.5 rounded-full overflow-hidden ml-1">
+                <div class="bg-emerald-400 h-full rounded-full transition-all" :style="{ width: (solvedCount / allLessons.length * 100) + '%' }"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 搜索输入框 -->
+          <div class="relative w-full md:w-72">
+            <input 
+              v-model="searchQuery" 
+              type="text" 
+              placeholder="搜索知识点 / 靶场 / 漏洞类型..." 
+              class="w-full bg-slate-900/90 text-sm text-slate-100 placeholder-slate-500 px-4 py-2 pl-9 rounded-xl border border-slate-700/80 focus:outline-none focus:border-cyan-400 transition-colors">
+            <span class="absolute left-3 top-2.5 text-slate-400 text-xs">🔍</span>
+            <button v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2.5 text-slate-500 hover:text-slate-300 text-xs">✕</button>
+          </div>
+        </div>
+
+        <!-- 阶段与课程卡片流 -->
+        <div v-for="stage in filteredStages" :key="stage.id" class="space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 pt-2">
+            <div class="flex items-center gap-3">
+              <span class="w-2.5 h-6 rounded-full" :class="{
+                'bg-emerald-400': stage.color === 'emerald',
+                'bg-cyan-400': stage.color === 'cyan',
+                'bg-purple-400': stage.color === 'purple',
+                'bg-amber-400': stage.color === 'amber'
+              }"></span>
+              <h2 class="text-base font-bold text-slate-100">{{ stage.title }}</h2>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">{{ stage.badge }}</span>
+            </div>
+            <p class="text-xs text-slate-400 hidden sm:block">{{ stage.description }}</p>
+          </div>
+
+          <!-- 课程卡片网格 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            <div 
+              v-for="lesson in stage.lessons" :key="lesson.id"
+              @click="openLessonDetail(lesson)"
+              class="glass-card p-4 rounded-xl cursor-pointer group flex flex-col justify-between relative overflow-hidden">
+              
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-900/90 text-cyan-400 border border-slate-700">
+                      {{ lesson.code }}
+                    </span>
+                    <span class="text-xs text-slate-400">{{ lesson.category }}</span>
+                  </div>
+                  
+                  <span v-if="solvedFlags[lesson.code]" class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold">
+                    🚩 已夺旗 (+{{ missionsRegistry[lesson.code]?.points || 100 }}分)
+                  </span>
+                  <span v-else class="text-xs text-slate-500">⚪ 未通关</span>
+                </div>
+
+                <h3 class="font-semibold text-sm text-slate-200 group-hover:text-cyan-300 transition-colors line-clamp-1 mb-1.5">
+                  {{ lesson.title }}
+                </h3>
+
+                <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                  {{ lesson.summary }}
+                </p>
+              </div>
+
+              <!-- 底部靶场与沙盒标志 -->
+              <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-1.5 text-slate-400">
+                  <span class="text-purple-400 font-bold">🛠️ 武器打靶</span>
+                  <span class="truncate max-w-[140px] text-slate-500">| {{ lesson.targetLab }}</span>
+                </div>
+                <span class="text-cyan-400 group-hover:translate-x-1 transition-transform inline-block font-medium">进入 ➔</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- VIEW 2: 拟真武器级打靶工作台与 Flag 判题系统 (含详细任务简报) -->
+      <!-- ================================================================ -->
+      <section v-if="currentTab === 'simulators'" class="space-y-6">
+        
+        <!-- 顶部课程靶机选择器 (全新分阶段智能导航卡片) -->
+        <div class="glass-panel p-4 sm:p-5 rounded-2xl space-y-4 border border-purple-500/30 bg-slate-950/85 shadow-xl">
+          <!-- 第一行：阶段筛选与切关控制 -->
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 border-b border-slate-800/80 pb-3">
+            
+            <!-- 阶段分类筛选胶囊 -->
+            <div class="flex items-center gap-1.5 overflow-x-auto text-xs pb-1 lg:pb-0">
+              <span class="text-slate-400 font-bold whitespace-nowrap mr-1 flex items-center gap-1">
+                <span>🎯</span> 靶场阶段:
+              </span>
+              <button 
+                @click="simStageFilter = 'all'"
+                :class="simStageFilter === 'all' ? 'bg-purple-500/25 text-purple-300 border-purple-500/60 font-bold shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-slate-200'"
+                class="px-3 py-1 rounded-lg border text-xs transition-all whitespace-nowrap">
+                全部 (62)
+              </button>
+              <button 
+                v-for="s in allStages" :key="s.id"
+                @click="simStageFilter = s.id"
+                :class="simStageFilter === s.id ? 'bg-purple-500/25 text-purple-300 border-purple-500/60 font-bold shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-slate-200'"
+                class="px-2.5 py-1 rounded-lg border text-xs transition-all whitespace-nowrap">
+                {{ s.badge }} ({{ s.lessons.length }})
+              </button>
+            </div>
+
+            <!-- 右侧：前后切关与全量下拉跳转 -->
+            <div class="flex items-center gap-2">
+              <button 
+                @click="prevSimLesson" 
+                class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-xs font-bold transition-all flex items-center gap-1 shadow-sm">
+                ◀ 上一关
+              </button>
+
+              <!-- 智能全量下拉跳转 -->
+              <select 
+                :value="activeSimLessonCode" 
+                @change="selectSimLesson($event.target.value)"
+                class="bg-slate-900 font-mono text-xs text-purple-200 px-3 py-1.5 rounded-xl border border-slate-700 focus:border-purple-500 focus:outline-none max-w-[210px] truncate cursor-pointer">
+                <optgroup v-for="s in allStages" :key="s.id" :label="s.title">
+                  <option v-for="l in s.lessons" :key="l.code" :value="l.code">
+                    {{ l.code }} - {{ l.title }} {{ solvedFlags[l.code] ? '🚩' : '' }}
+                  </option>
+                </optgroup>
+              </select>
+
+              <button 
+                @click="nextSimLesson" 
+                class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-xs font-bold transition-all flex items-center gap-1 shadow-sm">
+                下一关 ▶
+              </button>
+            </div>
+          </div>
+
+          <!-- 第二行：所选阶段靶机卡片网格阵列 -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 max-h-44 overflow-y-auto pr-1">
+            <button 
+              v-for="l in filteredSimLessons" :key="l.code"
+              @click="selectSimLesson(l.code)"
+              :class="activeSimLessonCode === l.code ? 'bg-purple-500/25 text-purple-200 border-purple-500 shadow-md shadow-purple-500/20 font-bold ring-1 ring-purple-500/40' : 'bg-slate-900/70 text-slate-400 border-slate-800/80 hover:border-slate-700 hover:text-slate-200'"
+              class="p-2.5 rounded-xl border text-left text-xs transition-all flex flex-col justify-between group">
+              
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <span class="font-mono text-[11px] font-bold px-1.5 py-0.5 rounded" :class="activeSimLessonCode === l.code ? 'bg-purple-900/80 text-purple-300' : 'bg-black/60 text-slate-400'">
+                  {{ l.code }}
+                </span>
+                <span v-if="solvedFlags[l.code]" class="text-[11px] text-emerald-400 font-bold" title="已夺旗通关">🚩</span>
+                <span v-else class="text-[10px] text-slate-600">⚪</span>
+              </div>
+
+              <div class="truncate text-[11px] font-medium leading-tight" :class="activeSimLessonCode === l.code ? 'text-purple-200 font-bold' : 'text-slate-300'">
+                {{ l.title.replace(/^\d+-/, '') }}
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 🎯 核心高亮：靶场详细作战任务简报 (Mission Briefing Card) -->
+        <!-- ============================================================ -->
+        <div class="glass-panel p-5 rounded-2xl border-cyan-500/40 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950/20 space-y-4 shadow-xl">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-cyan-900/40 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-lg">🎯</span>
+              <div>
+                <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 mr-2">作战代号</span>
+                <span class="font-bold text-sm text-slate-100">{{ activeMission.title }}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold font-mono px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">
+                🟢 ONLINE 靶机运行中
+              </span>
+              <span class="text-xs font-bold font-mono px-2.5 py-1 rounded-full bg-amber-950 text-amber-400 border border-amber-800">
+                🏆 战功: +{{ activeMission.points }} 分
+              </span>
+            </div>
+          </div>
+
+          <!-- 3 栏作战指标拆解 -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <!-- 1. 背景与攻防场景 -->
+            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+              <div class="font-bold text-slate-300 flex items-center gap-1.5">
+                <span class="text-cyan-400">🏢</span> 1. 目标攻防场景与背景:
+              </div>
+              <p class="text-slate-400 leading-relaxed">{{ activeMission.background }}</p>
+            </div>
+
+            <!-- 2. 核心攻击目标 -->
+            <div class="p-3.5 rounded-xl bg-purple-950/30 border border-purple-800/60 space-y-1.5">
+              <div class="font-bold text-purple-300 flex items-center gap-1.5">
+                <span>🎯</span> 2. 核心突破目标与任务:
+              </div>
+              <p class="text-purple-200 leading-relaxed font-medium">{{ activeMission.objective }}</p>
+            </div>
+
+            <!-- 3. 推荐作战武器 -->
+            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+              <div class="font-bold text-slate-300 flex items-center gap-1.5">
+                <span class="text-amber-400">🛠️</span> 3. 推荐使用打靶武器:
+              </div>
+              <p class="text-amber-300 font-mono leading-relaxed">{{ activeMission.recommendedTool }}</p>
+            </div>
+          </div>
+
+          <!-- 底部 Flag 隐藏位置线索 -->
+          <div class="p-3 rounded-xl bg-black/50 border border-slate-800 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <span class="text-rose-400 font-bold">🚩 Flag 隐藏线索:</span>
+              <span class="text-slate-300 font-mono">{{ activeMission.flagLocation }}</span>
+            </div>
+            <span class="text-slate-500 text-[11px] hidden sm:inline">使用下方武器突破后在此获取 Flag 并提交判题</span>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- 💡 核心交互：实战通关详细操作步骤 (点击可展开/收起) -->
+          <!-- ============================================================ -->
+          <div class="border-t border-cyan-900/40 pt-3 space-y-3">
+            <div class="flex items-center justify-between">
+              <button 
+                @click="showMissionSteps = !showMissionSteps"
+                class="px-4 py-2 rounded-xl bg-cyan-950/80 hover:bg-cyan-900/80 text-cyan-300 border border-cyan-700/70 text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer group">
+                <span class="text-sm group-hover:scale-110 transition-transform">💡</span>
+                <span>{{ showMissionSteps ? '收起实操通关详细步骤 ▲' : '点击查看实战通关详细操作步骤 (Walkthrough Guide) ▼' }}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-900 text-cyan-200 border border-cyan-700">共 {{ activeMission.detailedSteps?.length || 4 }} 步</span>
+              </button>
+
+              <span v-if="showMissionSteps" class="text-[11px] text-slate-400 hidden sm:inline">
+                按照下方指引在下方武器工作台中实操即可夺得 Flag
+              </span>
+            </div>
+
+            <!-- 展开的详细操作步骤卡片列表 -->
+            <div v-if="showMissionSteps && activeMission.detailedSteps" class="space-y-2.5 pt-1 animate-fade-in">
+              <div 
+                v-for="s in activeMission.detailedSteps" :key="s.step"
+                class="p-3.5 rounded-xl bg-slate-900/90 border border-cyan-900/50 space-y-2 hover:border-cyan-700 transition-colors">
+                
+                <div class="flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-2">
+                    <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center justify-center font-mono font-bold text-[11px]">
+                      {{ s.step }}
+                    </span>
+                    <span class="font-bold text-slate-200">{{ s.title }}</span>
+                  </div>
+                  <span v-if="s.flagHint" class="text-[10px] px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono font-bold">
+                    🎯 包含 Flag
+                  </span>
+                </div>
+
+                <p class="text-slate-300 text-xs leading-relaxed pl-7">{{ s.action }}</p>
+
+                <!-- 命令/Payload 一键复制 -->
+                <div v-if="s.command" class="ml-7 p-2.5 rounded-lg bg-black/70 border border-slate-800 flex items-center justify-between gap-2 text-xs font-mono text-cyan-200">
+                  <span class="truncate">{{ s.command }}</span>
+                  <button @click="copyToClipboard(s.command)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-cyan-300 rounded text-[11px] whitespace-nowrap shrink-0 border border-slate-700">
+                    复制命令 📋
+                  </button>
+                </div>
+
+                <!-- Flag 参考提示 -->
+                <div v-if="s.flagHint" class="ml-7 p-2 rounded-lg bg-rose-950/40 border border-rose-900/60 flex items-center justify-between gap-2 text-xs font-mono text-rose-200">
+                  <span>Flag 格式参考: <strong class="text-rose-300">{{ s.flagHint }}</strong></span>
+                  <button @click="copyToClipboard(s.flagHint)" class="px-2.5 py-1 bg-rose-900 hover:bg-rose-800 text-rose-200 rounded text-[11px] whitespace-nowrap shrink-0 border border-rose-700">
+                    复制 Flag 📋
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 武器切换子导航 (Burp / Kali / AntSword) -->
+        <div class="glass-panel p-2 rounded-2xl flex items-center space-x-2">
+          <button 
+            @click="activeCombatTool = 'burp'"
+            :class="activeCombatTool === 'burp' ? 'bg-orange-500/20 text-orange-400 border-orange-500/60 font-bold' : 'text-slate-400 border-transparent'"
+            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-medium border transition-all flex items-center gap-2">
+            <span>🛰️</span> 1. Burp Suite 抓包重放器 (Repeater)
+          </button>
+          <button 
+            @click="activeCombatTool = 'kali'"
+            :class="activeCombatTool === 'kali' ? 'bg-sky-500/20 text-sky-300 border-sky-500/60 font-bold' : 'text-slate-400 border-transparent'"
+            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-medium border transition-all flex items-center gap-2">
+            <span>⚡</span> 2. Kali Linux 交互终端 (CLI Shell)
+          </button>
+          <button 
+            @click="activeCombatTool = 'antsword'"
+            :class="activeCombatTool === 'antsword' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/60 font-bold' : 'text-slate-400 border-transparent'"
+            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-medium border transition-all flex items-center gap-2">
+            <span>🔪</span> 3. 中国蚁剑 / 冰蝎 远程管理端 (Webshell)
+          </button>
+        </div>
+
+        <!-- 武器 1: Burp Suite 抓包重放器 (Repeater) -->
+        <div v-if="activeCombatTool === 'burp'" class="burp-window p-5 space-y-4 shadow-2xl">
+          <div class="flex items-center justify-between border-b border-orange-900/60 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="w-3 h-3 rounded-full bg-orange-500 animate-pulse"></span>
+              <span class="text-sm font-bold text-orange-400 font-mono">Burp Suite Professional - [Repeater Tab: #1]</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-black/60 text-slate-400 border border-slate-700">Target: target.com:80</span>
+            </div>
+            <button 
+              @click="sendBurpPacket"
+              class="px-6 py-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-orange-500/20 flex items-center gap-2 transition-all">
+              <span>🚀</span> Send (发送数据包)
+            </button>
+          </div>
+
+          <!-- 请求包与响应包左右分屏 -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-xs text-orange-300 font-bold">
+                <span>Request Headers & Body (可修改请求头、Cookie、MIME、Payload):</span>
+                <span class="text-[10px] text-slate-500">RAW HTTP/1.1</span>
+              </div>
+              <textarea 
+                v-model="burpRawRequest" 
+                rows="14" 
+                class="w-full bg-black/90 font-mono text-xs text-orange-200 p-3.5 rounded-xl border border-orange-950 focus:border-orange-500 focus:outline-none leading-relaxed select-all"></textarea>
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-xs text-slate-300 font-bold">
+                <span>Response (服务端实时返回包):</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-mono font-bold" :class="burpStatusBadge === 200 ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-rose-950 text-rose-400 border border-rose-800'">
+                  HTTP Status: {{ burpStatusBadge }}
+                </span>
+              </div>
+              <pre class="w-full h-72 bg-black/90 font-mono text-xs text-emerald-300 p-3.5 rounded-xl border border-slate-800 overflow-y-auto leading-relaxed whitespace-pre-wrap select-all">{{ burpRawResponse }}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- 武器 2: Kali Linux 命令行交互终端 -->
+        <div v-if="activeCombatTool === 'kali'" class="kali-terminal p-5 space-y-4 shadow-2xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              <span class="text-xs font-mono text-slate-400 ml-2">root@kali-websec: ~ (渗透攻击机交互环境)</span>
+            </div>
+            <button @click="clearKaliTerminal" class="text-xs text-slate-500 hover:text-slate-300">Clear</button>
+          </div>
+
+          <!-- 快捷指令筹码 -->
+          <div class="flex items-center gap-2 overflow-x-auto text-xs pb-1">
+            <span class="text-slate-500 text-[11px] whitespace-nowrap">常用武器命令:</span>
+            <button @click="kaliInputCmd = 'nmap -sS -sV -p 1-10000 192.168.1.108'" class="px-2.5 py-1 rounded bg-slate-800 text-sky-300 border border-slate-700 whitespace-nowrap">nmap 端口扫描</button>
+            <button @click="kaliInputCmd = 'sqlmap -u \'http://target.com/view.php?id=1\' --dbs --batch'" class="px-2.5 py-1 rounded bg-slate-800 text-sky-300 border border-slate-700 whitespace-nowrap">sqlmap 自动化注入</button>
+            <button @click="kaliInputCmd = 'dirsearch -u http://target.com/ -e php,txt,git'" class="px-2.5 py-1 rounded bg-slate-800 text-sky-300 border border-slate-700 whitespace-nowrap">dirsearch 目录扫描</button>
+            <button @click="kaliInputCmd = 'gopherus --exploit redis'" class="px-2.5 py-1 rounded bg-slate-800 text-sky-300 border border-slate-700 whitespace-nowrap">gopherus 生成器</button>
+            <button @click="kaliInputCmd = 'frida -U -f com.bank.mobileapp -l bypass_ssl.js'" class="px-2.5 py-1 rounded bg-slate-800 text-sky-300 border border-slate-700 whitespace-nowrap">frida 动态Hook</button>
+            <button @click="kaliInputCmd = 'cat flag.txt'" class="px-2.5 py-1 rounded bg-slate-800 text-amber-300 border border-slate-700 whitespace-nowrap">cat flag.txt</button>
+          </div>
+
+          <div class="h-80 overflow-y-auto space-y-3 p-3.5 bg-black/80 rounded-xl border border-slate-800 font-mono text-xs select-all">
+            <div v-for="(h, idx) in kaliHistory" :key="idx" class="space-y-1">
+              <div class="text-sky-400 font-bold">root@kali-websec:~# {{ h.cmd }}</div>
+              <pre class="text-slate-200 whitespace-pre-wrap leading-relaxed">{{ h.stdout }}</pre>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-sky-400 font-bold whitespace-nowrap">root@kali-websec:~#</span>
+            <input 
+              v-model="kaliInputCmd" 
+              @keyup.enter="runKaliTerminal"
+              type="text" 
+              placeholder="输入攻击指令 (如 nmap, sqlmap, dirsearch, curl, gopherus 等)，回车执行..."
+              class="w-full bg-slate-900 font-mono text-xs text-sky-200 px-3 py-2.5 rounded-xl border border-slate-700 focus:border-sky-400 focus:outline-none">
+            <button 
+              @click="runKaliTerminal" 
+              class="px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl text-xs whitespace-nowrap">
+              执行指令 ➔
+            </button>
+          </div>
+        </div>
+
+        <!-- 武器 3: 中国蚁剑 / 冰蝎 Webshell 远程管理端 -->
+        <div v-if="activeCombatTool === 'antsword'" class="antsword-window p-5 space-y-4 shadow-2xl">
+          <div class="flex items-center justify-between border-b border-emerald-900/60 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-sm font-bold text-emerald-400 font-mono">AntSword & Behinder Webshell Client - [在线连接器]</span>
+            </div>
+            <button 
+              @click="connectWebshell" 
+              class="px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/20">
+              🔗 Connect (连接目标木马)
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <div>
+              <label class="text-slate-400 block mb-1">Webshell URL:</label>
+              <input v-model="antswordUrl" type="text" class="w-full bg-slate-900 font-mono text-emerald-300 px-3 py-2 rounded-xl border border-slate-700 focus:border-emerald-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">连接密码 (Password):</label>
+              <input v-model="antswordPass" type="text" class="w-full bg-slate-900 font-mono text-slate-200 px-3 py-2 rounded-xl border border-slate-700">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">脚本类型 (Script Type):</label>
+              <select v-model="antswordType" class="w-full bg-slate-900 font-mono text-slate-200 px-3 py-2 rounded-xl border border-slate-700">
+                <option value="PHP">PHP (eval / assert)</option>
+                <option value="JSP">JSP (ClassLoader / Behinder)</option>
+                <option value="ASPX">ASPX (.NET JScript)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">加密编码 (Encoder / Key):</label>
+              <input v-model="antswordKey" type="text" class="w-full bg-slate-900 font-mono text-slate-200 px-3 py-2 rounded-xl border border-slate-700">
+            </div>
+          </div>
+
+          <div v-if="antswordResult && antswordResult.isConnected" class="space-y-4 pt-3 border-t border-slate-800">
+            <div class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-700 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+              <span class="text-emerald-300">OS: {{ antswordResult.serverInfo.os }}</span>
+              <span class="text-emerald-300">User: {{ antswordResult.serverInfo.currentUser }}</span>
+              <span class="text-emerald-300">WebRoot: {{ antswordResult.serverInfo.webRoot }}</span>
+              <span class="px-2 py-0.5 bg-emerald-900 text-emerald-200 rounded font-bold">{{ antswordResult.flag }}</span>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left text-xs font-mono border-collapse">
+                <thead>
+                  <tr class="bg-slate-900 text-slate-400 border-b border-slate-800">
+                    <th class="p-2.5">文件名</th>
+                    <th class="p-2.5">大小</th>
+                    <th class="p-2.5">权限</th>
+                    <th class="p-2.5">所有者</th>
+                    <th class="p-2.5 text-right">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="f in antswordResult.fileList" :key="f.name" class="border-b border-slate-800/60 bg-slate-900/30 hover:bg-slate-800/40">
+                    <td class="p-2.5 font-bold" :class="f.name === 'flag.txt' ? 'text-amber-400 animate-pulse' : 'text-slate-200'">{{ f.isDir ? '📁 ' : '📄 ' }}{{ f.name }}</td>
+                    <td class="p-2.5 text-slate-400">{{ f.size }}</td>
+                    <td class="p-2.5 text-emerald-400">{{ f.perm }}</td>
+                    <td class="p-2.5 text-slate-400">{{ f.user }}</td>
+                    <td class="p-2.5 text-right">
+                      <button @click="copyTip = 'FLAG{ANTSWORD_REMOTE_READ_FLAG_FILE_PWNED}'; setTimeout(() => { copyTip = ''; }, 3000);" class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 rounded text-[11px]">查看内容</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 🚩 核心：全自动 Flag 判题与提交控制台 (Flag Judge Console) -->
+        <!-- ============================================================ -->
+        <div class="glass-panel p-5 rounded-2xl border-rose-500/40 bg-gradient-to-br from-slate-950 via-slate-900 to-rose-950/20 space-y-4 shadow-xl">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🚩</span>
+              <h3 class="font-bold text-sm text-slate-100">{{ activeSimLessonCode }} 靶机 Flag 判题与夺旗验证:</h3>
+              <span class="text-xs px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono">+{{ activeMission.points }} 分</span>
+            </div>
+
+            <!-- 已夺旗标志 -->
+            <div v-if="solvedFlags[activeSimLessonCode]" class="text-xs text-emerald-400 font-bold flex items-center gap-1.5">
+              <span>🏆 已通关夺旗!</span>
+              <span class="text-slate-500">({{ solvedFlags[activeSimLessonCode].solvedAt }})</span>
+            </div>
+          </div>
+
+          <!-- Flag 提交输入框与判题按钮 -->
+          <div class="flex flex-col sm:flex-row items-center gap-3">
+            <input 
+              v-model="inputFlags[activeSimLessonCode]" 
+              @keyup.enter="submitFlagJudge(activeSimLessonCode)"
+              type="text" 
+              placeholder="输入你从靶机中获取到的 Flag (格式: FLAG{...})"
+              class="w-full bg-slate-900 font-mono text-xs text-rose-200 px-4 py-2.5 rounded-xl border border-slate-700 focus:border-rose-500 focus:outline-none">
+            
+            <button 
+              @click="submitFlagJudge(activeSimLessonCode)" 
+              class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-rose-600 via-red-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-rose-500/25 whitespace-nowrap flex items-center justify-center gap-2 transition-all">
+              <span>🚀</span> 提交 Flag 判题
+            </button>
+          </div>
+
+          <!-- 判题结果 Alert 弹出框 -->
+          <div v-if="judgeFeedbacks[activeSimLessonCode]" class="p-3.5 rounded-xl border text-xs leading-relaxed animate-fade-in"
+               :class="judgeFeedbacks[activeSimLessonCode].isCorrect ? 'bg-emerald-950/50 border-emerald-500 text-emerald-200' : 'bg-rose-950/50 border-rose-500 text-rose-200'">
+            {{ judgeFeedbacks[activeSimLessonCode].msg }}
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- VIEW 3: 白盒代码审计与修复 (Code Audit Studio) -->
+      <!-- ================================================================ -->
+      <section v-if="currentTab === 'audit'" class="space-y-6">
+        <div class="glass-panel p-2 rounded-2xl flex items-center space-x-2 overflow-x-auto">
+          <button 
+            v-for="c in codeAuditCases" :key="c.id"
+            @click="activeAuditCase = c"
+            :class="activeAuditCase.id === c.id ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50' : 'text-slate-400 hover:text-slate-200 border-transparent'"
+            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-medium border transition-all whitespace-nowrap">
+            {{ c.category }}
+          </button>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-800 pb-4">
+            <div>
+              <h3 class="font-bold text-base text-emerald-300 flex items-center gap-2">
+                <span>🔍</span> {{ activeAuditCase.name }}
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">语言: {{ activeAuditCase.language }} | 类别: {{ activeAuditCase.category }}</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="terminal-window p-4 text-xs font-mono space-y-2 border-rose-900/60 bg-rose-950/10">
+              <div class="flex items-center justify-between text-rose-400 font-bold border-b border-rose-900/40 pb-2">
+                <span>❌ 存在漏洞的缺陷代码 (Vulnerable Code)</span>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">未做净化</span>
+              </div>
+              <pre class="text-rose-200 overflow-x-auto leading-relaxed">{{ activeAuditCase.vulnerableCode }}</pre>
+
+              <div class="mt-4 pt-3 border-t border-rose-900/40 space-y-1.5">
+                <div class="text-rose-300 font-bold">💥 攻击者利用 Payload:</div>
+                <div class="p-2 rounded bg-black/50 text-rose-200 break-all">{{ activeAuditCase.attackPayload }}</div>
+              </div>
+            </div>
+
+            <div class="terminal-window p-4 text-xs font-mono space-y-2 border-emerald-900/60 bg-emerald-950/10">
+              <div class="flex items-center justify-between text-emerald-400 font-bold border-b border-emerald-900/40 pb-2">
+                <span>✅ 官方安全修复代码 (Secure Patched Code)</span>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">参数化 / 白名单</span>
+              </div>
+              <pre class="text-emerald-200 overflow-x-auto leading-relaxed">{{ activeAuditCase.secureCode }}</pre>
+
+              <div class="mt-4 pt-3 border-t border-emerald-900/40 space-y-1.5">
+                <div class="text-emerald-300 font-bold">🛡️ 防御核心准则:</div>
+                <p class="text-slate-300 font-sans text-xs leading-relaxed">{{ activeAuditCase.defenseTips }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5 text-xs">
+            <span class="font-bold text-cyan-300">🔬 数据流污点分析 (Taint Analysis):</span>
+            <p class="text-slate-300 leading-relaxed">{{ activeAuditCase.taintAnalysis }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- VIEW 4: 渗透武器库速查表 (Arsenal & Cheatsheet) -->
+      <!-- ================================================================ -->
+      <section v-if="currentTab === 'cheatsheet'" class="space-y-6">
+        
+        <!-- 专题分类导航药丸切换条 (8 大攻防专题) -->
+        <div class="glass-panel p-2.5 rounded-2xl flex items-center space-x-2 overflow-x-auto border border-amber-500/20 bg-slate-950/80">
+          <button 
+            @click="cheatsheetCategory = 'sqli'"
+            :class="cheatsheetCategory === 'sqli' ? 'bg-amber-500/25 text-amber-300 border-amber-500/60 shadow-sm font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
+            class="px-3.5 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap flex items-center gap-1.5">
+            <span>💉</span> SQL 注入全集 ({{ cheatsheets.sqli.length }})
+          </button>
+          <button 
+            @click="cheatsheetCategory = 'upload'"
+            :class="cheatsheetCategory === 'upload' ? 'bg-amber-500/25 text-amber-300 border-amber-500/60 shadow-sm font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
+            class="px-3.5 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap flex items-center gap-1.5">
+            <span>📦</span> 文件上传 & 绕过 ({{ cheatsheets.upload.length }})
+          </button>
+          <button 
+            @click="cheatsheetCategory = 'rce'"
+            :class="cheatsheetCategory === 'rce' ? 'bg-amber-500/25 text-amber-300 border-amber-500/60 shadow-sm font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
+            class="px-3.5 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap flex items-center gap-1.5">
+            <span>⚡</span> 命令执行 & 字符绕过 ({{ cheatsheets.rce.length }})
+          </button>
+          <button 
+            @click="cheatsheetCategory = 'ssrf'"
+            :class="cheatsheetCategory === 'ssrf' ? 'bg-amber-500/25 text-amber-300 border-amber-500/60 shadow-sm font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
+            class="px-3.5 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap flex items-center gap-1.5">
+            <span>🌐</span> SSRF & 伪协议 ({{ cheatsheets.ssrf?.length || 8 }})
+          </button>
+          <button 
+            @click="cheatsheetCategory = 'xxe'"
+            :class="cheatsheetCategory === 'xxe' ? 'bg-amber-500/25 text-amber-300 border-amber-500/60 shadow-sm font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
+            class="px-3.5 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap flex items-center gap-1.5">
+            <span>🧬</span> XXE 实体注入 ({{ cheatsheets.xxe?.length || 5 }})
+          </button>
+          <button 
+            @click="cheatsheetCategory = 'xss'"
+            :class="cheatsheetCategory === 'xss' ? 'bg-amber-500/25 text-amber-300 border-amber-500/60 shadow-sm font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
+            class="px-3.5 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap flex items-center gap-1.5">
+            <span>🎭</span> XSS 逃逸 & 免杀 ({{ cheatsheets.xss?.length || 7 }})
+          </button>
+          <button 
+            @click="cheatsheetCategory = 'incident'"
+            :class="cheatsheetCategory === 'incident' ? 'bg-amber-500/25 text-amber-300 border-amber-500/60 shadow-sm font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
+            class="px-3.5 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap flex items-center gap-1.5">
+            <span>🛡️</span> 应急响应 & 溯源 ({{ cheatsheets.incident?.length || 8 }})
+          </button>
+          <button 
+            @click="cheatsheetCategory = 'reverseShell'"
+            :class="cheatsheetCategory === 'reverseShell' ? 'bg-amber-500/25 text-amber-300 border-amber-500/60 shadow-sm font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
+            class="px-3.5 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap flex items-center gap-1.5">
+            <span>🐚</span> 反弹 Shell 一键生成器 (11)
+          </button>
+        </div>
+
+        <!-- 专题搜索与过滤栏 (非反弹Shell视图时显示) -->
+        <div v-if="cheatsheetCategory !== 'reverseShell'" class="glass-panel p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-slate-800">
+          <div class="relative flex-1">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 text-xs">🔍</span>
+            <input 
+              v-model="cheatsheetSearchQuery" 
+              type="text" 
+              placeholder="实时搜索当前专题 Payload、技巧名称、绕过手段或原理解析 (如 union, chunked, ifs, gopher, eval, uid=0)..." 
+              class="w-full bg-slate-900/90 font-mono text-xs text-amber-200 pl-9 pr-8 py-2.5 rounded-xl border border-slate-700/80 focus:border-amber-500 focus:outline-none placeholder-slate-500">
+            <button v-if="cheatsheetSearchQuery" @click="cheatsheetSearchQuery = ''" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white text-xs">✕</button>
+          </div>
+          <div class="text-xs text-slate-400 font-mono flex items-center gap-2">
+            <span>匹配条目: <strong class="text-amber-300 font-bold">{{ filteredCheatsheets.length }}</strong> / {{ cheatsheets[cheatsheetCategory]?.length || 0 }}</span>
+          </div>
+        </div>
+
+        <!-- 视图 A: 反弹 Shell 一键生成器 -->
+        <div v-if="cheatsheetCategory === 'reverseShell'" class="glass-panel p-6 rounded-2xl space-y-6 border border-amber-500/30">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h3 class="font-bold text-sm text-amber-300 flex items-center gap-2">
+                <span>🐚</span> 多语言交互式反弹 Shell 载荷生成器
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">修改下方 LHOST 与 LPORT，全套 11 种主流语言与工具的反弹 Shell 载荷将自动实时重构生成。</p>
+            </div>
+            <span v-if="copyTip" class="text-xs text-emerald-400 font-bold px-3 py-1 bg-emerald-950 border border-emerald-800 rounded-lg animate-pulse">
+              {{ copyTip }}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs font-bold text-slate-300 block mb-1">攻击者监听 IP (LHOST):</label>
+              <input v-model="revShellIp" type="text" class="w-full bg-slate-900 font-mono text-xs text-amber-300 px-3.5 py-2.5 rounded-xl border border-slate-700 focus:border-amber-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="text-xs font-bold text-slate-300 block mb-1">攻击者监听端口 (LPORT):</label>
+              <input v-model="revShellPort" type="text" class="w-full bg-slate-900 font-mono text-xs text-amber-300 px-3.5 py-2.5 rounded-xl border border-slate-700 focus:border-amber-500 focus:outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-3">
+            <div v-for="sh in generatedRevShells" :key="sh.type" class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 transition-colors">
+              <div class="space-y-1 flex-1 min-w-0">
+                <span class="text-xs font-mono font-bold text-amber-400 px-2 py-0.5 rounded bg-amber-950/60 border border-amber-800/60">{{ sh.type }}</span>
+                <div class="font-mono text-xs text-slate-200 break-all select-all bg-black/60 p-2.5 rounded-lg border border-slate-800/80 mt-1.5">{{ sh.code }}</div>
+              </div>
+              <button @click="copyToClipboard(sh.code)" class="px-3.5 py-2 bg-slate-800 hover:bg-amber-600 hover:text-white text-xs text-amber-300 font-medium rounded-xl border border-slate-700 whitespace-nowrap shrink-0 transition-all">
+                复制载荷 📋
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 视图 B: 专题武器速查表表格 (支持搜索过滤) -->
+        <div v-else class="glass-panel p-5 rounded-2xl overflow-x-auto border border-amber-500/20">
+          <div v-if="filteredCheatsheets.length === 0" class="py-12 text-center text-slate-500 text-xs">
+            未找到与 "{{ cheatsheetSearchQuery }}" 相关的 Payload 或技巧，请尝试其他关键词
+          </div>
+          <table v-else class="w-full text-left text-xs font-mono border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 bg-slate-900/70">
+                <th class="p-3 whitespace-nowrap">分类</th>
+                <th class="p-3 whitespace-nowrap">技巧名称</th>
+                <th class="p-3">实操 Payload / 核心指令</th>
+                <th class="p-3">适用场景 & 攻击原理</th>
+                <th class="p-3 text-right whitespace-nowrap">快捷操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, idx) in filteredCheatsheets" :key="idx" class="border-b border-slate-800/70 hover:bg-slate-900/50 transition-colors">
+                <td class="p-3 whitespace-nowrap">
+                  <span class="px-2 py-0.5 rounded bg-amber-950/60 text-amber-300 border border-amber-800/50 text-[11px]">
+                    {{ item.category }}
+                  </span>
+                </td>
+                <td class="p-3 font-bold text-slate-200 whitespace-nowrap">{{ item.name }}</td>
+                <td class="p-3">
+                  <div class="p-2 rounded-lg bg-black/70 border border-slate-800 text-cyan-200 font-bold break-all max-w-xl select-all">
+                    {{ item.payload }}
+                  </div>
+                </td>
+                <td class="p-3 text-slate-400 font-sans leading-relaxed max-w-xs">{{ item.desc }}</td>
+                <td class="p-3 text-right whitespace-nowrap">
+                  <button @click="copyToClipboard(item.payload)" class="px-3 py-1.5 bg-slate-800 hover:bg-amber-600 hover:text-white text-slate-300 rounded-lg border border-slate-700 transition-all font-sans text-xs">
+                    复制 📋
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- VIEW 5: 编解码与渗透工具箱 (Tools Hub) -->
+      <!-- ================================================================ -->
+      <section v-if="currentTab === 'tools'" class="space-y-6">
+        <div class="glass-panel p-2 rounded-2xl flex items-center space-x-2">
+          <button 
+            @click="toolSubTab = 'encoder'"
+            :class="toolSubTab === 'encoder' ? 'bg-sky-500/20 text-sky-300 border-sky-500/50' : 'text-slate-400 border-transparent'"
+            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-medium border transition-all">
+            🔤 多功能渗透编解码器
+          </button>
+          <button 
+            @click="toolSubTab = 'gopher'"
+            :class="toolSubTab === 'gopher' ? 'bg-sky-500/20 text-sky-300 border-sky-500/50' : 'text-slate-400 border-transparent'"
+            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-medium border transition-all">
+            🚀 Gopher 协议数据包生成器
+          </button>
+        </div>
+
+        <div v-if="toolSubTab === 'encoder'" class="glass-panel p-6 rounded-2xl space-y-6">
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-sky-300">输入需要转换的原始字符串 / Payload:</label>
+            <textarea v-model="toolRawText" rows="3" class="w-full bg-slate-900 font-mono text-xs text-sky-200 p-3 rounded-xl border border-slate-700 focus:border-sky-400 focus:outline-none"></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-sky-400">URL 编码:</span>
+                <button @click="copyToClipboard(urlEncoded)" class="text-[11px] text-cyan-300 hover:underline">复制 📋</button>
+              </div>
+              <div class="font-mono text-xs text-slate-300 break-all select-all bg-black/40 p-2 rounded">{{ urlEncoded }}</div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-sky-400">Base64 编码:</span>
+                <button @click="copyToClipboard(base64Encoded)" class="text-[11px] text-cyan-300 hover:underline">复制 📋</button>
+              </div>
+              <div class="font-mono text-xs text-slate-300 break-all select-all bg-black/40 p-2 rounded">{{ base64Encoded }}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- VIEW 6: 阶段通关自测考核 (Stage Assessment & Quizzes) -->
+      <!-- ================================================================ -->
+      <section v-if="currentTab === 'assessment'" class="space-y-6">
+        <div class="glass-panel p-2 rounded-2xl flex items-center space-x-2 overflow-x-auto">
+          <button 
+            v-for="q in allQuizzes" :key="q.stageId"
+            @click="activeQuizStage = q"
+            :class="activeQuizStage.stageId === q.stageId ? 'bg-rose-500/20 text-rose-300 border-rose-500/50' : 'text-slate-400 border-transparent'"
+            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-medium border transition-all whitespace-nowrap">
+            {{ q.stageTitle }}
+          </button>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div>
+              <h3 class="font-bold text-base text-rose-300 flex items-center gap-2">
+                <span>🏆</span> {{ activeQuizStage.stageTitle }}
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">共 {{ activeQuizStage.totalQuestions }} 题 · 检验核心实战与代码理解能力</p>
+            </div>
+
+            <div v-if="quizResults[activeQuizStage.stageId]" class="text-right">
+              <div class="text-2xl font-black font-mono text-emerald-400">
+                {{ quizResults[activeQuizStage.stageId].score }} <span class="text-xs text-slate-400">/ 100 分</span>
+              </div>
+              <span class="text-xs text-slate-400">考核已完成</span>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div 
+              v-for="(q, idx) in activeQuizStage.questions" :key="q.id"
+              class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-3">
+              <div class="flex items-start gap-2.5">
+                <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
+                  Q{{ idx + 1 }}
+                </span>
+                <h4 class="text-sm font-semibold text-slate-200 leading-relaxed">{{ q.question }}</h4>
+              </div>
+
+              <div class="grid grid-cols-1 gap-2 pt-1">
+                <button 
+                  v-for="(opt, optIdx) in q.options" :key="optIdx"
+                  @click="selectAnswer(q.id, optIdx)"
+                  :disabled="quizResults[activeQuizStage.stageId]?.completed"
+                  :class="{
+                    'bg-cyan-500/20 border-cyan-500 text-cyan-200': userAnswers[q.id] === optIdx && !quizResults[activeQuizStage.stageId]?.completed,
+                    'bg-emerald-950/40 border-emerald-500 text-emerald-300 font-bold': quizResults[activeQuizStage.stageId]?.completed && optIdx === q.correct,
+                    'bg-rose-950/40 border-rose-500 text-rose-300 line-through': quizResults[activeQuizStage.stageId]?.completed && userAnswers[q.id] === optIdx && optIdx !== q.correct,
+                    'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700': userAnswers[q.id] !== optIdx && !(quizResults[activeQuizStage.stageId]?.completed && optIdx === q.correct)
+                  }"
+                  class="text-left p-3 rounded-xl border text-xs transition-all">
+                  {{ opt }}
+                </button>
+              </div>
+
+              <div v-if="quizResults[activeQuizStage.stageId]?.completed" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1">
+                <div class="font-bold" :class="userAnswers[q.id] === q.correct ? 'text-emerald-400' : 'text-rose-400'">
+                  {{ userAnswers[q.id] === q.correct ? '🎉 回答正确！' : '❌ 回答错误！正确答案：' + String.fromCharCode(65 + q.correct) }}
+                </div>
+                <p class="text-slate-400 leading-relaxed">{{ q.explanation }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+            <button 
+              v-if="quizResults[activeQuizStage.stageId]?.completed" 
+              @click="resetQuiz" 
+              class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700">
+              重新测试 🔄
+            </button>
+            <button 
+              v-else 
+              @click="submitQuiz" 
+              class="px-6 py-2.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-rose-500/20">
+              提交考核评分 📝
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ================================================================ -->
+    <!-- 课时详情弹窗 (固定头部与选项卡导航，彻底解决遮挡问题) -->
+    <!-- ================================================================ -->
+    <div v-if="activeLesson" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md" @click="closeLessonDetail">
+      <div class="glass-panel w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl border border-cyan-500/40 shadow-2xl overflow-hidden bg-slate-950/95" @click.stop>
+        
+        <!-- 弹窗固定头部与导航栏 (Pinned Header & Tab Bar) -->
+        <div class="p-6 pb-3 border-b border-slate-800 bg-slate-900/90 space-y-3 shrink-0">
+          <!-- 标题行 -->
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">{{ activeLesson.code }}</span>
+                <span class="text-xs text-slate-400 font-medium">{{ activeLesson.category }}</span>
+                <span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">{{ activeLesson.difficulty }}</span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-100">{{ activeLesson.title }}</h3>
+            </div>
+            <button @click="closeLessonDetail" class="text-slate-400 hover:text-white text-2xl font-bold p-1 leading-none transition-colors">✕</button>
+          </div>
+
+          <!-- 选项卡子导航 (高清徽章样式，永不遮挡) -->
+          <div class="flex items-center space-x-2 overflow-x-auto pt-1 pb-1 text-xs">
+            <button 
+              @click="activeLessonTab = 'lecture'"
+              :class="activeLessonTab === 'lecture' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/60 font-bold shadow-sm' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
+              class="px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap flex items-center gap-1.5">
+              <span>📖</span> 核心深度讲义
+            </button>
+
+            <button 
+              @click="activeLessonTab = 'sandbox'"
+              :class="activeLessonTab === 'sandbox' ? 'bg-purple-500/20 text-purple-300 border-purple-500/60 font-bold shadow-sm' : 'text-slate-400 hover:text-purple-300 hover:bg-slate-800/60 border-transparent'"
+              class="px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap flex items-center gap-1.5">
+              <span>🚩</span> 作战任务与夺旗
+            </button>
+
+            <button 
+              @click="activeLessonTab = 'lab'"
+              :class="activeLessonTab === 'lab' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/60 font-bold shadow-sm' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
+              class="px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap flex items-center gap-1.5">
+              <span>🛠️</span> 动手实验命令
+            </button>
+
+            <button 
+              @click="activeLessonTab = 'checklist'"
+              :class="activeLessonTab === 'checklist' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/60 font-bold shadow-sm' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
+              class="px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap flex items-center gap-1.5">
+              <span>💡</span> 核心考点清单
+            </button>
+
+            <button 
+              @click="activeLessonTab = 'files'"
+              :class="activeLessonTab === 'files' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/60 font-bold shadow-sm' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
+              class="px-3.5 py-1.5 rounded-lg border transition-all whitespace-nowrap flex items-center gap-1.5">
+              <span>📁</span> 本地课件索引
+            </button>
+          </div>
+        </div>
+
+        <!-- 弹窗可滚动内容区 (Scrollable Body) -->
+        <div class="p-6 overflow-y-auto flex-1 space-y-4 text-xs">
+          
+          <!-- TAB 1: 核心深度讲义 (Markdown 渲染) -->
+          <div v-if="activeLessonTab === 'lecture'" class="space-y-4">
+            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 leading-relaxed">
+              <span class="font-bold text-cyan-400 block mb-1">🎯 本课学习目标与导读:</span>
+              {{ activeLesson.summary }}
+            </div>
+
+            <div v-if="activeLesson.detailedLecture" 
+                 class="markdown-body p-5 rounded-xl bg-slate-950 border border-slate-800 shadow-inner"
+                 v-html="renderMarkdown(activeLesson.detailedLecture)">
+            </div>
+          </div>
+
+          <!-- TAB 2: 武器打靶实操与 Flag 提交 (含任务简报) -->
+          <div v-if="activeLessonTab === 'sandbox'" class="space-y-4">
+            
+            <!-- 任务简报卡片 -->
+            <div class="p-4 rounded-xl bg-purple-950/20 border border-purple-800/60 space-y-3">
+              <div class="flex items-center justify-between border-b border-purple-900/40 pb-2">
+                <span class="font-bold text-purple-300">{{ activeLesson.code }} - 作战任务指令书</span>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-purple-900 text-purple-200 font-mono">+{{ missionsRegistry[activeLesson.code]?.points || 100 }} 分</span>
+              </div>
+              
+              <div class="space-y-2 text-xs">
+                <div><strong class="text-cyan-300">🏢 目标背景:</strong> <span class="text-slate-300">{{ missionsRegistry[activeLesson.code]?.background }}</span></div>
+                <div><strong class="text-purple-300">🎯 攻击目标:</strong> <span class="text-purple-200 font-medium">{{ missionsRegistry[activeLesson.code]?.objective }}</span></div>
+                <div><strong class="text-amber-300">🛠️ 推荐武器:</strong> <span class="text-amber-200 font-mono">{{ missionsRegistry[activeLesson.code]?.recommendedTool }}</span></div>
+                <div class="pt-1"><strong class="text-rose-300">🚩 Flag 隐藏线索:</strong> <span class="text-slate-400 font-mono">{{ missionsRegistry[activeLesson.code]?.flagLocation }}</span></div>
+              </div>
+
+              <!-- 弹窗内部详细操作步骤 (点击展开/收起) -->
+              <div v-if="missionsRegistry[activeLesson.code]?.detailedSteps" class="border-t border-purple-900/40 pt-2">
+                <button 
+                  @click="showMissionSteps = !showMissionSteps"
+                  class="px-3 py-1.5 rounded-lg bg-purple-950/80 hover:bg-purple-900 text-purple-300 border border-purple-700/60 text-xs font-bold transition-all flex items-center gap-1.5 w-full justify-between">
+                  <span>💡 {{ showMissionSteps ? '收起实战通关详细操作步骤 ▲' : '点击查看实战通关详细操作步骤 ▼' }}</span>
+                  <span class="text-[10px] text-purple-400">({{ missionsRegistry[activeLesson.code].detailedSteps.length }} 步)</span>
+                </button>
+
+                <div v-if="showMissionSteps" class="mt-2.5 space-y-2 animate-fade-in">
+                  <div 
+                    v-for="s in missionsRegistry[activeLesson.code].detailedSteps" :key="s.step"
+                    class="p-2.5 rounded-lg bg-black/60 border border-purple-900/50 space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="font-bold text-purple-300">第 {{ s.step }} 步: {{ s.title }}</span>
+                      <span v-if="s.flagHint" class="text-[10px] text-rose-400 font-bold">🚩 捕获 Flag</span>
+                    </div>
+                    <p class="text-slate-300 text-xs">{{ s.action }}</p>
+                    <div v-if="s.command" class="p-2 rounded bg-slate-900 font-mono text-[11px] text-cyan-300 flex items-center justify-between gap-1">
+                      <span class="truncate">{{ s.command }}</span>
+                      <button @click="copyToClipboard(s.command)" class="px-2 py-0.5 bg-slate-800 text-cyan-300 rounded text-[10px]">复制</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Flag 提交框 -->
+            <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3">
+              <label class="font-bold text-rose-300 block">🚩 提交本课夺旗 Flag:</label>
+              <div class="flex items-center gap-2">
+                <input 
+                  v-model="inputFlags[activeLesson.code]" 
+                  @keyup.enter="submitFlagJudge(activeLesson.code)"
+                  type="text" 
+                  placeholder="FLAG{...}" 
+                  class="w-full bg-black/80 font-mono text-xs text-rose-200 px-3 py-2 rounded-xl border border-slate-700 focus:border-rose-500 focus:outline-none">
+                <button 
+                  @click="submitFlagJudge(activeLesson.code)" 
+                  class="px-5 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold rounded-xl text-xs whitespace-nowrap shadow-lg shadow-rose-500/20">
+                  提交判题
+                </button>
+              </div>
+
+              <div v-if="judgeFeedbacks[activeLesson.code]" class="p-3 rounded-xl border text-xs"
+                   :class="judgeFeedbacks[activeLesson.code].isCorrect ? 'bg-emerald-950 border-emerald-500 text-emerald-200' : 'bg-rose-950 border-rose-500 text-rose-200'">
+                {{ judgeFeedbacks[activeLesson.code].msg }}
+              </div>
+            </div>
+
+            <!-- 进入打靶武器库 -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+              <button 
+                @click="selectSimLesson(activeLesson.code); activeCombatTool = 'burp'; currentTab = 'simulators'; closeLessonDetail();"
+                class="p-3 rounded-xl bg-slate-900 hover:bg-orange-950/40 border border-slate-800 hover:border-orange-600 text-left transition-all">
+                <span class="text-sm block">🛰️ Burp 抓包</span>
+                <span class="text-[10px] text-slate-500">重放数据包找 Flag</span>
+              </button>
+
+              <button 
+                @click="selectSimLesson(activeLesson.code); activeCombatTool = 'kali'; currentTab = 'simulators'; closeLessonDetail();"
+                class="p-3 rounded-xl bg-slate-900 hover:bg-sky-950/40 border border-slate-800 hover:border-sky-600 text-left transition-all">
+                <span class="text-sm block">⚡ Kali 终端</span>
+                <span class="text-[10px] text-slate-500">运行 Nmap/Sqlmap 拿 Flag</span>
+              </button>
+
+              <button 
+                @click="selectSimLesson(activeLesson.code); activeCombatTool = 'antsword'; currentTab = 'simulators'; closeLessonDetail();"
+                class="p-3 rounded-xl bg-slate-900 hover:bg-emerald-950/40 border border-slate-800 hover:border-emerald-600 text-left transition-all">
+                <span class="text-sm block">🔪 蚁剑客户端</span>
+                <span class="text-[10px] text-slate-500">连接提权读 flag.txt</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 3: 动手实验与命令手册 -->
+          <div v-if="activeLessonTab === 'lab'" class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+                <span class="font-bold text-emerald-400">🎯 推荐对练靶场:</span>
+                <p class="text-slate-200 font-mono">{{ activeLesson.targetLab }}</p>
+              </div>
+
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+                <span class="font-bold text-amber-400">⚡ 实战避坑小技巧:</span>
+                <p class="text-slate-300">{{ activeLesson.practicalTips }}</p>
+              </div>
+            </div>
+
+            <div v-if="activeLesson.labCommands" class="space-y-1.5">
+              <span class="font-bold text-cyan-400">💻 实战命令与复现脚本:</span>
+              <div class="terminal-window p-4 text-xs font-mono text-cyan-200 overflow-x-auto whitespace-pre-wrap">{{ activeLesson.labCommands }}</div>
+            </div>
+          </div>
+
+          <!-- TAB 4: 核心考点清单 -->
+          <div v-if="activeLessonTab === 'checklist'" class="space-y-3">
+            <div class="space-y-2">
+              <span class="font-bold text-cyan-400">💡 必须掌握的核心考点 (Checklist):</span>
+              <ul class="space-y-2 list-disc list-inside text-slate-300 bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                <li v-for="(kp, idx) in activeLesson.keyPoints" :key="idx" class="leading-relaxed">{{ kp }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- TAB 5: 本地课件资料索引 -->
+          <div v-if="activeLessonTab === 'files'" class="space-y-3">
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+              <span class="font-bold text-cyan-400 block">📑 本地对应课件 (位于 E:\学习\网络安全\培训\23期):</span>
+              <div v-if="activeLesson.localFiles && activeLesson.localFiles.length > 0" class="space-y-2">
+                <div v-for="f in activeLesson.localFiles" :key="f" class="flex items-center justify-between p-2.5 rounded-lg bg-black/40 border border-slate-800">
+                  <div class="flex items-center gap-2 truncate">
+                    <span>📄</span>
+                    <span class="font-mono text-slate-200 truncate">{{ f }}</span>
+                  </div>
+                  <button @click="copyToClipboard('E:\\学习\\网络安全\\培训\\23期\\' + f)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-cyan-300 rounded text-[11px] whitespace-nowrap">
+                    复制完整路径
+                  </button>
+                </div>
+              </div>
+              <div v-else class="text-slate-500 italic">对应目录内包含本课程配套完整 PDF 课件。</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 弹窗固定底部操作栏 (Pinned Footer) -->
+        <div class="p-4 border-t border-slate-800 bg-slate-900/90 flex items-center justify-between shrink-0">
+          <button 
+            @click="toggleLessonComplete(activeLesson.id)"
+            :class="isLessonCompleted(activeLesson.id) ? 'bg-emerald-950 text-emerald-300 border-emerald-800' : 'bg-slate-800 text-slate-300'"
+            class="px-4 py-2 rounded-xl text-xs font-bold border transition-colors">
+            {{ isLessonCompleted(activeLesson.id) ? '✅ 已标记为已掌握' : '⚪ 标记为已掌握' }}
+          </button>
+
+          <button 
+            @click="selectSimLesson(activeLesson.code); currentTab = 'simulators'; closeLessonDetail();"
+            class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl text-xs transition-colors shadow-lg shadow-purple-500/20 flex items-center gap-1.5">
+            <span>🚩</span> 进入武器打靶夺旗
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 数据与业务脚本 -->
+  <script src="js/data.js"></script>
+  <script src="js/simulators.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
