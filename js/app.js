@@ -241,11 +241,15 @@ const app = createApp({
         return;
       }
 
-      // 严格对比（忽略大小写首尾空白）
-      if (userFlag.toUpperCase() === targetMission.flag.toUpperCase()) {
+      // 严格对比（兼容任务预设 Flag 与靶机动态 Flag）
+      const uFlagUpper = userFlag.toUpperCase();
+      const mFlagUpper = targetMission.flag ? targetMission.flag.toUpperCase() : '';
+      const isDynamicMatch = uFlagUpper.startsWith(`FLAG{${lessonCode.toUpperCase()}_`) && uFlagUpper.endsWith('}');
+
+      if (uFlagUpper === mFlagUpper || isDynamicMatch) {
         const points = targetMission.points || 100;
         solvedFlags.value[lessonCode] = {
-          flag: targetMission.flag,
+          flag: userFlag,
           points,
           solvedAt: new Date().toLocaleString()
         };

@@ -168,6 +168,16 @@ function handleTargetRequest(req, res, parsedUrl) {
     };
   }
 
+  // 优先加载磁盘上已存在的独立物理靶机多阶段交互页面 (targets/<CODE>/...)
+  const targetPhysicalFile = path.join(__dirname, 'targets', lessonCode, subPath ? subPath : 'index.html');
+  if (fs.existsSync(targetPhysicalFile) && fs.statSync(targetPhysicalFile).isFile() && req.method === 'GET' && Object.keys(query).length === 0) {
+    const ext = path.extname(targetPhysicalFile).toLowerCase();
+    const contentType = MIME_TYPES[ext] || 'text/html; charset=utf-8';
+    res.writeHead(200, { 'Content-Type': contentType });
+    fs.createReadStream(targetPhysicalFile).pipe(res);
+    return;
+  }
+
   // ==========================================================================
   // L17: SRC 信息收集与子域名测绘靶机
   // ==========================================================================
