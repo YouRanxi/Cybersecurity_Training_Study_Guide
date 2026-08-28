@@ -3,75 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[L31] 真实靶场 - 用户个人头像与附件上传中心</title>
+  <title>员工相册与头像上传中心 - 安恒协同办公平台</title>
   <style>
-    :root { --primary: #00f2fe; --bg: #0a0f1d; --card: #0f172a; --border: #1e293b; --text: #f8fafc; }
+    :root { --primary: #0284c7; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; }
     * { box-sizing: border-box; }
-    body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 1.5rem; min-height: 100vh; }
-    .container { max-width: 960px; margin: 0 auto; }
-    .target-header { background: linear-gradient(135deg, #0f172a, #1e1b4b); border: 1px solid #38bdf8; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-    .target-badge { font-family: monospace; font-size: 0.85rem; font-weight: bold; background: #082f49; color: #38bdf8; padding: 0.25rem 0.6rem; border-radius: 6px; border: 1px solid #0284c7; }
-    .status-badge { font-family: monospace; font-size: 0.8rem; font-weight: bold; background: #064e3b; color: #34d399; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #059669; display: flex; align-items: center; gap: 6px; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; }
-    .target-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    .desc-box { background: #1e293b; border-left: 4px solid #00f2fe; padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; color: #94a3b8; line-height: 1.5; margin-bottom: 1.5rem; }
-    input[type="text"], input[type="password"], input[type="number"], select, textarea { width: 100%; background: #030712; border: 1px solid #334155; color: #38bdf8; font-family: monospace; font-size: 0.9rem; padding: 0.6rem 0.8rem; border-radius: 8px; margin-top: 0.4rem; margin-bottom: 1rem; outline: none; }
-    input:focus, textarea:focus { border-color: #00f2fe; box-shadow: 0 0 10px rgba(0,242,254,0.3); }
-    .btn-submit { background: linear-gradient(90deg, #0284c7, #2563eb); color: #fff; font-weight: bold; font-size: 0.85rem; padding: 0.6rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
-    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
-    .result-box { background: #030712; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem; margin-top: 1rem; font-family: monospace; font-size: 0.85rem; line-height: 1.6; color: #e2e8f0; word-break: break-all; }
-    .flag-banner { background: linear-gradient(90deg, #4c0519, #881337); border: 1px solid #f43f5e; color: #ffe4e6; padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: monospace; font-weight: bold; font-size: 1rem; text-align: center; }
+    body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: #0b1120; border-bottom: 1px solid #334155; padding: 0.8rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .brand { font-size: 1.1rem; font-weight: bold; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+    .nav-links a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; margin-left: 1.2rem; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    main { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; flex: 1; width: 100%; }
+    .card { background: var(--card); border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    footer { background: #0b1120; border-top: 1px solid #1e293b; padding: 1rem; text-align: center; font-size: 0.75rem; color: #64748b; }
+    input[type="text"], input[type="password"], input[type="number"], select, textarea { width: 100%; background: #030712; border: 1px solid #334155; color: #f8fafc; font-family: inherit; font-size: 0.9rem; padding: 0.6rem 0.8rem; border-radius: 6px; margin-top: 0.3rem; margin-bottom: 1rem; outline: none; }
+    input:focus, textarea:focus { border-color: var(--accent); }
+    .btn { background: var(--primary); color: #fff; font-weight: 500; font-size: 0.85rem; padding: 0.6rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+    .btn:hover { background: #0369a1; }
+    .alert { padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.85rem; margin-top: 1rem; line-height: 1.5; }
+    .alert-info { background: #082f49; border: 1px solid #0284c7; color: #bae6fd; }
+    .alert-danger { background: #4c0519; border: 1px solid #e11d48; color: #ffe4e6; }
+    .alert-success { background: #064e3b; border: 1px solid #059669; color: #a7f3d0; }
+    .flag-card { background: linear-gradient(90deg, #4c0519, #881337); border: 1px solid #f43f5e; color: #ffe4e6; padding: 1.2rem; border-radius: 8px; margin-top: 1.5rem; font-family: monospace; font-weight: bold; font-size: 1rem; text-align: center; }
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
-    th { background: #1e293b; color: #38bdf8; padding: 0.6rem; text-align: left; border: 1px solid #334155; }
+    th { background: #0f172a; color: #38bdf8; padding: 0.6rem; text-align: left; border: 1px solid #334155; }
     td { padding: 0.6rem; border: 1px solid #1e293b; color: #cbd5e1; }
-    tr:nth-child(even) { background: #0b1120; }
+    tr:nth-child(even) { background: #111827; }
   </style>
-  <script>
-    function escapeHtml(str) {
-      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    }
-  </script>
 </head>
 <body>
-  <div class="container">
-    <div class="target-header">
-      <div>
-        <span class="target-badge">L31 真实实战靶机</span>
-        <h2 style="margin: 0.4rem 0 0 0; font-size: 1.25rem; color: #f8fafc;">用户个人头像与附件上传中心</h2>
-      </div>
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <span class="status-badge"><span class="status-dot"></span> 靶机运行中 (ONLINE)</span>
-        <a href="../../index.html" style="color: #38bdf8; text-decoration: none; font-size: 0.8rem;">返回学习平台 ➔</a>
-      </div>
+  <header>
+    <div class="brand">
+      <span>🛡️</span>
+      <span>安恒协同办公平台</span>
+      <span style="font-size:0.75rem; background:#082f49; color:#38bdf8; padding:0.1rem 0.4rem; border-radius:4px; border:1px solid #0284c7;">Upload Hub</span>
     </div>
+    <div class="nav-links">
+      <a href="index.html">刷新靶场</a>
+      <a href="../../index.html" style="color: #38bdf8;">返回 WebSec 学习平台 ➔</a>
+    </div>
+  </header>
+  <main>
+  <div class="card">
+    <h2 style="margin-top:0; color:#f8fafc; font-size:1.25rem;">📤 员工个人形象照片与附件上传中心</h2>
+    <p style="font-size:0.85rem; color:#94a3b8;">
+      后端安全黑名单禁用了 <code>.php</code> 后缀文件。请使用 Burp Suite 抓包，篡改上传文件名为 <code>.php5</code>、<code>.phtml</code> 或上传 <code>.htaccess</code> 配置文件实现绕过！
+    </p>
 
-    <div class="target-card">
-      <div class="desc-box">
-        <strong>🎯 靶机渗透目标:</strong> 黑名单禁用了 .php。选择包含 .php5, .phtml 或 .htaccess 的特殊文件名绕过黑名单上传 Webshell！
-      </div>
-      
-      <form onsubmit="doUpload(event)">
-        <label>选择待上传的文件 (或直接输入测试文件名):</label>
-        <input type="text" id="uploadFilename" value="shell.php5" placeholder="例如: shell.php5 或 .htaccess" style="margin-bottom:1rem;">
-        <button type="submit" class="btn-submit">📤 立即上传附件</button>
-      </form>
-      <div id="uploadResult" style="margin-top:1rem;"></div>
-      <script>
-        function doUpload(e) {
-          e.preventDefault();
-          const fn = document.getElementById('uploadFilename').value.trim();
-          const res = document.getElementById('uploadResult');
-          if (fn.toLowerCase().endsWith('.php')) {
-            res.innerHTML = '<div class="result-box" style="color:#f43f5e;">❌ 上传被拦截！黑名单策略严禁上传 .php 文件！</div>';
-          } else if (['.php5', '.phtml', '.php7', '.htaccess', '.user.ini'].some(ext => fn.toLowerCase().includes(ext))) {
-            res.innerHTML = '<div class="result-box" style="border-color:#34d399;"><h4 style="color:#34d399;margin:0 0 0.5rem 0;">🎉 文件上传成功！成功绕过黑名单！</h4><p>保存路径: /targets/L31/uploads/' + escapeHtml(fn) + '</p><div class="flag-banner">🚩 文件上传 Getshell 成功！Flag: FLAG{L31_UPLOAD_MIME_EXT_BYPASS_PWNED}</div></div>';
-          } else {
-            res.innerHTML = '<div class="result-box">ℹ️ 文件上传成功: ' + escapeHtml(fn) + ' (普通静态文件，请尝试使用 .php5 或 .htaccess 绕过)</div>';
-          }
-        }
-      </script>
-    
-    </div>
+    <form onsubmit="handleUpload(event)" style="max-width:480px;">
+      <label style="font-size:0.85rem; color:#cbd5e1;">选择待上传的文件 (或输入模拟抓包文件名):</label>
+      <input type="text" id="upFileName" value="avatar_shell.php" placeholder="例如: avatar.php 或 shell.php5 或 .htaccess">
+
+      <button type="submit" class="btn" style="width:100%;">📤 立即提交上传</button>
+    </form>
+
+    <div id="upMsg" style="margin-top:1.5rem;"></div>
   </div>
+
+  <script>
+    function handleUpload(e) {
+      e.preventDefault();
+      const fn = document.getElementById('upFileName').value.trim();
+      const msg = document.getElementById('upMsg');
+
+      if (fn.toLowerCase().endsWith('.php')) {
+        msg.innerHTML = `
+          <div class="alert alert-danger">
+            ❌ 上传被 WAF 安全拦截！后端策略严禁上传 .php 脚本文件！<br>
+            <span style="font-size:0.75rem; color:#fca5a5;">(安全提示: 使用 Burp Suite 抓包将 filename 篡改为 .php5, .phtml, .php. 或上传 .htaccess)</span>
+          </div>
+        `;
+      } else if (['.php5', '.phtml', '.php7', '.htaccess', '.user.ini'].some(ext => fn.toLowerCase().includes(ext))) {
+        msg.innerHTML = `
+          <div class="alert alert-success">
+            <strong>🎉 上传成功！成功绕过黑名单防护策略！</strong><br>
+            文件已保存至: <code>/targets/L31/uploads/${fn}</code>
+          </div>
+          <div class="flag-card">
+            🚩 文件上传 Getshell 成功！<br>
+            Flag: FLAG{L31_UPLOAD_MIME_EXT_BYPASS_PWNED}
+          </div>
+        `;
+      } else {
+        msg.innerHTML = `
+          <div class="alert alert-info">
+            ℹ️ 普通静态文件上传成功: <strong>${fn}</strong>。<br>
+            (未触发脚本执行权限，请尝试上传包含可执行后缀的木马文件)
+          </div>
+        `;
+      }
+    }
+  </script>
+  </main>
+  <footer>
+    <p>© 2026 Enterprise Security Network Hub. All rights reserved. Powered by Nginx/1.18.0 (Ubuntu)</p>
+  </footer>
 </body>
 </html>

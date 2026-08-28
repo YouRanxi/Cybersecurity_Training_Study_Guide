@@ -3,82 +3,114 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[L22] 真实靶场 - 易购数码商城 - 订单结算收银台</title>
+  <title>数码商城收银台 - 易购极客数码专营店</title>
   <style>
-    :root { --primary: #00f2fe; --bg: #0a0f1d; --card: #0f172a; --border: #1e293b; --text: #f8fafc; }
+    :root { --primary: #0284c7; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; }
     * { box-sizing: border-box; }
-    body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 1.5rem; min-height: 100vh; }
-    .container { max-width: 960px; margin: 0 auto; }
-    .target-header { background: linear-gradient(135deg, #0f172a, #1e1b4b); border: 1px solid #38bdf8; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-    .target-badge { font-family: monospace; font-size: 0.85rem; font-weight: bold; background: #082f49; color: #38bdf8; padding: 0.25rem 0.6rem; border-radius: 6px; border: 1px solid #0284c7; }
-    .status-badge { font-family: monospace; font-size: 0.8rem; font-weight: bold; background: #064e3b; color: #34d399; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #059669; display: flex; align-items: center; gap: 6px; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; }
-    .target-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    .desc-box { background: #1e293b; border-left: 4px solid #00f2fe; padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; color: #94a3b8; line-height: 1.5; margin-bottom: 1.5rem; }
-    input[type="text"], input[type="password"], input[type="number"], select, textarea { width: 100%; background: #030712; border: 1px solid #334155; color: #38bdf8; font-family: monospace; font-size: 0.9rem; padding: 0.6rem 0.8rem; border-radius: 8px; margin-top: 0.4rem; margin-bottom: 1rem; outline: none; }
-    input:focus, textarea:focus { border-color: #00f2fe; box-shadow: 0 0 10px rgba(0,242,254,0.3); }
-    .btn-submit { background: linear-gradient(90deg, #0284c7, #2563eb); color: #fff; font-weight: bold; font-size: 0.85rem; padding: 0.6rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
-    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
-    .result-box { background: #030712; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem; margin-top: 1rem; font-family: monospace; font-size: 0.85rem; line-height: 1.6; color: #e2e8f0; word-break: break-all; }
-    .flag-banner { background: linear-gradient(90deg, #4c0519, #881337); border: 1px solid #f43f5e; color: #ffe4e6; padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: monospace; font-weight: bold; font-size: 1rem; text-align: center; }
+    body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: #0b1120; border-bottom: 1px solid #334155; padding: 0.8rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .brand { font-size: 1.1rem; font-weight: bold; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+    .nav-links a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; margin-left: 1.2rem; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    main { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; flex: 1; width: 100%; }
+    .card { background: var(--card); border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    footer { background: #0b1120; border-top: 1px solid #1e293b; padding: 1rem; text-align: center; font-size: 0.75rem; color: #64748b; }
+    input[type="text"], input[type="password"], input[type="number"], select, textarea { width: 100%; background: #030712; border: 1px solid #334155; color: #f8fafc; font-family: inherit; font-size: 0.9rem; padding: 0.6rem 0.8rem; border-radius: 6px; margin-top: 0.3rem; margin-bottom: 1rem; outline: none; }
+    input:focus, textarea:focus { border-color: var(--accent); }
+    .btn { background: var(--primary); color: #fff; font-weight: 500; font-size: 0.85rem; padding: 0.6rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+    .btn:hover { background: #0369a1; }
+    .alert { padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.85rem; margin-top: 1rem; line-height: 1.5; }
+    .alert-info { background: #082f49; border: 1px solid #0284c7; color: #bae6fd; }
+    .alert-danger { background: #4c0519; border: 1px solid #e11d48; color: #ffe4e6; }
+    .alert-success { background: #064e3b; border: 1px solid #059669; color: #a7f3d0; }
+    .flag-card { background: linear-gradient(90deg, #4c0519, #881337); border: 1px solid #f43f5e; color: #ffe4e6; padding: 1.2rem; border-radius: 8px; margin-top: 1.5rem; font-family: monospace; font-weight: bold; font-size: 1rem; text-align: center; }
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
-    th { background: #1e293b; color: #38bdf8; padding: 0.6rem; text-align: left; border: 1px solid #334155; }
+    th { background: #0f172a; color: #38bdf8; padding: 0.6rem; text-align: left; border: 1px solid #334155; }
     td { padding: 0.6rem; border: 1px solid #1e293b; color: #cbd5e1; }
-    tr:nth-child(even) { background: #0b1120; }
+    tr:nth-child(even) { background: #111827; }
   </style>
-  <script>
-    function escapeHtml(str) {
-      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    }
-  </script>
 </head>
 <body>
-  <div class="container">
-    <div class="target-header">
+  <header>
+    <div class="brand">
+      <span>🛡️</span>
+      <span>易购极客数码专营店</span>
+      <span style="font-size:0.75rem; background:#082f49; color:#38bdf8; padding:0.1rem 0.4rem; border-radius:4px; border:1px solid #0284c7;">结算系统</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="robots.txt">robots.txt</a>
+      <a href="../../index.html" style="color: #38bdf8;">返回 WebSec 学习平台 ➔</a>
+    </div>
+  </header>
+  <main>
+  <div class="card">
+    <h2 style="margin-top:0; color:#f8fafc; font-size:1.25rem;">🛒 确认订单信息与收银台</h2>
+    
+    <div style="display:flex; gap:1.5rem; align-items:center; background:#0b1120; padding:1.2rem; border-radius:8px; border:1px solid #334155; margin-bottom:1.5rem;">
+      <div style="font-size:3rem;">💻</div>
       <div>
-        <span class="target-badge">L22 真实实战靶机</span>
-        <h2 style="margin: 0.4rem 0 0 0; font-size: 1.25rem; color: #f8fafc;">易购数码商城 - 订单结算收银台</h2>
-      </div>
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <span class="status-badge"><span class="status-dot"></span> 靶机运行中 (ONLINE)</span>
-        <a href="../../index.html" style="color: #38bdf8; text-decoration: none; font-size: 0.8rem;">返回学习平台 ➔</a>
+        <h3 style="margin:0 0 0.4rem 0; color:#38bdf8; font-size:1.1rem;">ROG 枪神 8 Plus 超竞版 (RTX 4090 旗舰渗透笔记本)</h3>
+        <p style="margin:0; font-size:0.85rem; color:#94a3b8;">配置: i9-14900HX / 64G / 2TB SSD / 2.5K 240Hz 星云原画屏</p>
+        <p style="margin:0.4rem 0 0 0; font-size:1.1rem; color:#f43f5e; font-weight:bold;">官方售价: ¥ 29999.00 元</p>
       </div>
     </div>
 
-    <div class="target-card">
-      <div class="desc-box">
-        <strong>🎯 靶机渗透目标:</strong> 结算接口信任前端提交的 price 参数。修改单价为 0.01 元即可绕过余额限制完成 1 分钱提货！
-      </div>
-      
-      <div style="background:#030712;padding:1rem;border-radius:8px;border:1px solid #334155;margin-bottom:1rem;">
-        <h3 style="margin:0 0 0.5rem 0;color:#f59e0b;">💻 顶级红队渗透专用笔记本 (RTX 4090)</h3>
-        <p style="color:#94a3b8;margin:0;">原厂官方售价: <strong style="color:#f43f5e;font-size:1.1rem;">¥ 9999.00 元</strong></p>
-        <p style="color:#94a3b8;margin:0.25rem 0 0 0;">您当前的账户可用余额: <strong>¥ 10.00 元</strong></p>
-      </div>
-      <form onsubmit="doCheckout(event)" style="max-width:420px;">
-        <label>商品单价 (Price - 允许篡改测试):</label>
-        <input type="text" id="payPrice" value="9999.00">
-        <label>购买数量 (Quantity):</label>
-        <input type="number" id="payQty" value="1">
-        <button type="submit" class="btn-submit">💳 立即提交订单并支付</button>
-      </form>
-      <div id="payResult" style="margin-top:1rem;"></div>
-      <script>
-        function doCheckout(e) {
-          e.preventDefault();
-          const p = parseFloat(document.getElementById('payPrice').value || '9999');
-          const q = parseInt(document.getElementById('payQty').value || '1', 10);
-          const total = p * q;
-          const res = document.getElementById('payResult');
-          if (total <= 0.05 && total > 0) {
-            res.innerHTML = '<div class="result-box" style="border-color:#34d399;"><h3 style="color:#34d399;margin:0 0 0.5rem 0;">🎉 支付成功！已完成 1 分钱提货！</h3><p>订单总计: <strong style="color:#34d399;">¥ ' + total.toFixed(2) + ' 元</strong> (原价: ¥ 9999.00)</p><div class="flag-banner">🚩 恭喜利用支付篡改完成 0.01 元购！Flag: FLAG{L22_PAYMENT_LOGIC_TAMPER_SUCCESS_PWNED}</div></div>';
-          } else {
-            res.innerHTML = '<div class="result-box" style="color:#f43f5e;">❌ 余额不足！当前账户余额 ¥ 10.00 元，订单金额 ¥ ' + total.toFixed(2) + ' 元。<br>(提示: 将单价修改为 0.01 即可成功提货)</div>';
-          }
-        }
-      </script>
-    
+    <div style="font-size:0.85rem; color:#cbd5e1; margin-bottom:1rem;">
+      👤 <strong>当前登录账号:</strong> vip_buyer_1001 &nbsp;|&nbsp; 
+      💳 <strong>钱包当前可用余额:</strong> <span style="color:#34d399; font-weight:bold;">¥ 10.00 元</span>
     </div>
+
+    <form onsubmit="handleCheckout(event)" style="max-width:400px;">
+      <!-- 在真实渗透中，前端表单包含隐藏或可改的 price 参数 -->
+      <label style="font-size:0.85rem; color:#cbd5e1;">提交结算单价 (Price - 抓包篡改点):</label>
+      <input type="text" id="orderPrice" value="29999.00">
+
+      <label style="font-size:0.85rem; color:#cbd5e1;">购买数量 (Quantity):</label>
+      <input type="number" id="orderQty" value="1" min="1">
+
+      <button type="submit" class="btn" style="background:linear-gradient(90deg, #e11d48, #be123c); width:100%;">
+        💳 提交订单并完成扣款支付
+      </button>
+    </form>
+
+    <div id="checkoutMsg" style="margin-top:1rem;"></div>
   </div>
+
+  <script>
+    function handleCheckout(e) {
+      e.preventDefault();
+      const p = parseFloat(document.getElementById('orderPrice').value || '29999');
+      const q = parseInt(document.getElementById('orderQty').value || '1', 10);
+      const total = p * q;
+      const msg = document.getElementById('checkoutMsg');
+
+      if (total <= 10.00 && total > 0) {
+        msg.innerHTML = `
+          <div class="alert alert-success">
+            <strong>🎉 支付成功！订单已进入发货流程！</strong><br>
+            实际扣款金额: <strong style="color:#34d399;">¥ ${total.toFixed(2)} 元</strong> (原价 ¥ 29999.00)<br>
+            收货地址: 渗透测试实验室 A-101
+          </div>
+          <div class="flag-card">
+            🚩 逻辑漏洞价格篡改成功！<br>
+            Flag: FLAG{L22_PAYMENT_PRICE_TAMPER_SUCCESS_8832}
+          </div>
+        `;
+      } else {
+        msg.innerHTML = `
+          <div class="alert alert-danger">
+            ❌ 支付扣款失败！账户余额不足。<br>
+            订单所需金额: <strong>¥ ${total.toFixed(2)} 元</strong>，当前账户可用余额: <strong>¥ 10.00 元</strong>。<br>
+            <span style="font-size:0.75rem; color:#fca5a5;">(安全指引: 使用 Burp Suite 抓包拦截此请求，将 price 篡改为 0.01 即可绕过余额限制支付)</span>
+          </div>
+        `;
+      }
+    }
+  </script>
+  </main>
+  <footer>
+    <p>© 2026 Enterprise Security Network Hub. All rights reserved. Powered by Nginx/1.18.0 (Ubuntu)</p>
+  </footer>
 </body>
 </html>

@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /api/v2/debug_console
+Disallow: /.env
+Disallow: /.git/
+Disallow: /backup.zip
+Disallow: /config.inc.php.bak

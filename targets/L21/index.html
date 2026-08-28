@@ -3,77 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[L21] 真实靶场 - 用户个人资料中心 (越权漏洞靶场)</title>
+  <title>员工个人资料档案中心 - 安恒人力资源协同系统</title>
   <style>
-    :root { --primary: #00f2fe; --bg: #0a0f1d; --card: #0f172a; --border: #1e293b; --text: #f8fafc; }
+    :root { --primary: #0284c7; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; }
     * { box-sizing: border-box; }
-    body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 1.5rem; min-height: 100vh; }
-    .container { max-width: 960px; margin: 0 auto; }
-    .target-header { background: linear-gradient(135deg, #0f172a, #1e1b4b); border: 1px solid #38bdf8; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-    .target-badge { font-family: monospace; font-size: 0.85rem; font-weight: bold; background: #082f49; color: #38bdf8; padding: 0.25rem 0.6rem; border-radius: 6px; border: 1px solid #0284c7; }
-    .status-badge { font-family: monospace; font-size: 0.8rem; font-weight: bold; background: #064e3b; color: #34d399; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #059669; display: flex; align-items: center; gap: 6px; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; }
-    .target-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    .desc-box { background: #1e293b; border-left: 4px solid #00f2fe; padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; color: #94a3b8; line-height: 1.5; margin-bottom: 1.5rem; }
-    input[type="text"], input[type="password"], input[type="number"], select, textarea { width: 100%; background: #030712; border: 1px solid #334155; color: #38bdf8; font-family: monospace; font-size: 0.9rem; padding: 0.6rem 0.8rem; border-radius: 8px; margin-top: 0.4rem; margin-bottom: 1rem; outline: none; }
-    input:focus, textarea:focus { border-color: #00f2fe; box-shadow: 0 0 10px rgba(0,242,254,0.3); }
-    .btn-submit { background: linear-gradient(90deg, #0284c7, #2563eb); color: #fff; font-weight: bold; font-size: 0.85rem; padding: 0.6rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
-    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
-    .result-box { background: #030712; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem; margin-top: 1rem; font-family: monospace; font-size: 0.85rem; line-height: 1.6; color: #e2e8f0; word-break: break-all; }
-    .flag-banner { background: linear-gradient(90deg, #4c0519, #881337); border: 1px solid #f43f5e; color: #ffe4e6; padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: monospace; font-weight: bold; font-size: 1rem; text-align: center; }
+    body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: #0b1120; border-bottom: 1px solid #334155; padding: 0.8rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .brand { font-size: 1.1rem; font-weight: bold; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+    .nav-links a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; margin-left: 1.2rem; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    main { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; flex: 1; width: 100%; }
+    .card { background: var(--card); border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    footer { background: #0b1120; border-top: 1px solid #1e293b; padding: 1rem; text-align: center; font-size: 0.75rem; color: #64748b; }
+    input[type="text"], input[type="password"], input[type="number"], select, textarea { width: 100%; background: #030712; border: 1px solid #334155; color: #f8fafc; font-family: inherit; font-size: 0.9rem; padding: 0.6rem 0.8rem; border-radius: 6px; margin-top: 0.3rem; margin-bottom: 1rem; outline: none; }
+    input:focus, textarea:focus { border-color: var(--accent); }
+    .btn { background: var(--primary); color: #fff; font-weight: 500; font-size: 0.85rem; padding: 0.6rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+    .btn:hover { background: #0369a1; }
+    .alert { padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.85rem; margin-top: 1rem; line-height: 1.5; }
+    .alert-info { background: #082f49; border: 1px solid #0284c7; color: #bae6fd; }
+    .alert-danger { background: #4c0519; border: 1px solid #e11d48; color: #ffe4e6; }
+    .alert-success { background: #064e3b; border: 1px solid #059669; color: #a7f3d0; }
+    .flag-card { background: linear-gradient(90deg, #4c0519, #881337); border: 1px solid #f43f5e; color: #ffe4e6; padding: 1.2rem; border-radius: 8px; margin-top: 1.5rem; font-family: monospace; font-weight: bold; font-size: 1rem; text-align: center; }
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
-    th { background: #1e293b; color: #38bdf8; padding: 0.6rem; text-align: left; border: 1px solid #334155; }
+    th { background: #0f172a; color: #38bdf8; padding: 0.6rem; text-align: left; border: 1px solid #334155; }
     td { padding: 0.6rem; border: 1px solid #1e293b; color: #cbd5e1; }
-    tr:nth-child(even) { background: #0b1120; }
+    tr:nth-child(even) { background: #111827; }
   </style>
-  <script>
-    function escapeHtml(str) {
-      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    }
-  </script>
 </head>
 <body>
-  <div class="container">
-    <div class="target-header">
-      <div>
-        <span class="target-badge">L21 真实实战靶机</span>
-        <h2 style="margin: 0.4rem 0 0 0; font-size: 1.25rem; color: #f8fafc;">用户个人资料中心 (越权漏洞靶场)</h2>
-      </div>
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <span class="status-badge"><span class="status-dot"></span> 靶机运行中 (ONLINE)</span>
-        <a href="../../index.html" style="color: #38bdf8; text-decoration: none; font-size: 0.8rem;">返回学习平台 ➔</a>
-      </div>
+  <header>
+    <div class="brand">
+      <span>🛡️</span>
+      <span>安恒人力资源协同系统</span>
+      <span style="font-size:0.75rem; background:#082f49; color:#38bdf8; padding:0.1rem 0.4rem; border-radius:4px; border:1px solid #0284c7;">HR Portal</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">刷新靶场</a>
+      <a href="../../index.html" style="color: #38bdf8;">返回 WebSec 学习平台 ➔</a>
+    </div>
+  </header>
+  <main>
+  <div class="card">
+    <h2 style="margin-top:0; color:#f8fafc; font-size:1.25rem;">👤 员工个人私密档案查询中心</h2>
+    <p style="font-size:0.85rem; color:#94a3b8;">系统通过 <code>?uid=...</code> 参数获取员工私密档案。请尝试越权读取 VIP 高管 (UID: 1002) 的机密财务档案。</p>
+    
+    <div style="background:#0b1120; padding:0.8rem; border-radius:6px; border:1px solid #334155; margin-bottom:1rem; font-family:monospace; font-size:0.85rem; color:#38bdf8;">
+      当前请求 URL: http://127.0.0.1:8888/targets/L21/index.html?uid=<span id="urlUidDisplay">1001</span>
     </div>
 
-    <div class="target-card">
-      <div class="desc-box">
-        <strong>🎯 靶机渗透目标:</strong> 系统未做 Session 隔离，仅依据参数 uid 返回档案。点击越权探测修改为 uid=1002 读取高管隐私。
-      </div>
-      
-      <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
-        <button onclick="loadProfile('1001')" class="btn-submit" style="background:#334155;">查看当前账号 (UID: 1001)</button>
-        <button onclick="loadProfile('1002')" class="btn-submit" style="background:#0284c7;">越权探测 (UID: 1002) ➔</button>
-      </div>
-      <div id="profileBox">
-        <div class="result-box">
-          <p>👤 <strong>当前登录用户:</strong> 小明 (UID: 1001)</p>
-          <p>📱 <strong>绑定手机:</strong> 13800001001</p>
-          <p>🏠 <strong>收货地址:</strong> 北京市海淀区中关村南大街1号</p>
-          <p>💳 <strong>银行卡号:</strong> 6222 **** **** 1001</p>
-        </div>
-      </div>
-      <script>
-        function loadProfile(uid) {
-          const box = document.getElementById('profileBox');
-          if (uid === '1002') {
-            box.innerHTML = '<div class="result-box" style="border-color:#f59e0b;"><h4 style="color:#f59e0b;margin:0 0 0.5rem 0;">⚠️ 水平越权成功！查看到用户 B 的私密档案:</h4><p>👤 <strong>用户姓名:</strong> 张总 (UID: 1002, VIP 企业高管)</p><p>📱 <strong>绑定手机:</strong> 13988888888</p><p>🏠 <strong>秘密住宅:</strong> 深圳市南山区科技园豪宅区A栋</p><p><p>💳 <strong>账户资产:</strong> ¥ 88,500,000.00 元</p><div class="flag-banner">🚩 恭喜越权读取到核心高管档案！Flag: FLAG{L21_IDOR_HORIZONTAL_AUTH_BYPASS_PWNED}</div></div>';
-          } else {
-            box.innerHTML = '<div class="result-box"><p>👤 <strong>当前登录用户:</strong> 小明 (UID: 1001)</p><p>📱 <strong>绑定手机:</strong> 13800001001</p><p>🏠 <strong>收货地址:</strong> 北京市海淀区中关村南大街1号</p><p>💳 <strong>银行卡号:</strong> 6222 **** **** 1001</p></div>';
-          }
-        }
-      </script>
-    
-    </div>
+    <form method="GET" action="index.html" style="display:flex; gap:0.5rem; max-width:400px;">
+      <input type="text" name="uid" id="uidInput" value="1001" placeholder="输入员工工号 UID...">
+      <button type="submit" class="btn" style="white-space:nowrap;">查询档案</button>
+    </form>
+
+    <div id="profileResult" style="margin-top:1.5rem;"></div>
   </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const uid = params.get('uid') || '1001';
+    document.getElementById('urlUidDisplay').innerText = uid;
+    document.getElementById('uidInput').value = uid;
+
+    const resBox = document.getElementById('profileResult');
+    if (uid === '1002') {
+      resBox.innerHTML = `
+        <div class="alert alert-success">
+          <strong>⚠️ 水平越权 (IDOR) 成功！已查获 VIP 董事会高管机密档案:</strong>
+        </div>
+        <table>
+          <tr><th>档案字段</th><th>档案内容</th></tr>
+          <tr><td>员工工号 (UID)</td><td>1002 (VIP 董事会执行总裁)</td></tr>
+          <tr><td>员工姓名</td><td>张董事长 (Zhang)</td></tr>
+          <tr><td>保密手机</td><td>13988888888</td></tr>
+          <tr><td>绝密住址</td><td>深圳市南山区科技园豪宅区天墅 01 栋</td></tr>
+          <tr><td>瑞士私人账户</td><td>CH93 0000 0000 8888 1002</td></tr>
+          <tr><td>账户净资产</td><td>¥ 88,500,000.00 元</td></tr>
+        </table>
+        <div class="flag-card">
+          🚩 水平越权漏洞挖掘成功！<br>
+          Flag: FLAG{L21_IDOR_HORIZONTAL_AUTH_BYPASS_PWNED}
+        </div>
+      `;
+    } else if (uid === '1001') {
+      resBox.innerHTML = `
+        <table>
+          <tr><th>档案字段</th><th>档案内容</th></tr>
+          <tr><td>员工工号 (UID)</td><td>1001 (普通研发初级工程师)</td></tr>
+          <tr><td>员工姓名</td><td>小明 (Xiao Ming)</td></tr>
+          <tr><td>绑定手机</td><td>13800001001</td></tr>
+          <tr><td>收货地址</td><td>北京市海淀区中关村南大街1号</td></tr>
+          <tr><td>银行卡号</td><td>6222 **** **** 1001</td></tr>
+        </table>
+        <p style="font-size:0.8rem; color:#94a3b8; margin-top:0.8rem;">(提示: 在 URL 中将 uid=1001 篡改为 uid=1002 发起越权渗透)</p>
+      `;
+    } else {
+      resBox.innerHTML = '<div class="alert alert-info">工号 ' + uid + ' 员工不存在。</div>';
+    }
+  </script>
+  </main>
+  <footer>
+    <p>© 2026 Enterprise Security Network Hub. All rights reserved. Powered by Nginx/1.18.0 (Ubuntu)</p>
+  </footer>
 </body>
 </html>

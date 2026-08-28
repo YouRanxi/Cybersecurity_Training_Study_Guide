@@ -3,188 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[L17] 真实靶场 - SRC 企业资产测绘与敏感文件泄露实战</title>
+  <title>企业综合协同办公门户 - 安恒科创集团</title>
   <style>
-    :root { --primary: #00f2fe; --bg: #0a0f1d; --card: #0f172a; --border: #1e293b; --text: #f8fafc; }
+    :root { --primary: #0284c7; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; }
     * { box-sizing: border-box; }
-    body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 1.5rem; min-height: 100vh; }
-    .container { max-width: 960px; margin: 0 auto; }
-    .target-header { background: linear-gradient(135deg, #0f172a, #1e1b4b); border: 1px solid #38bdf8; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-    .target-badge { font-family: monospace; font-size: 0.85rem; font-weight: bold; background: #082f49; color: #38bdf8; padding: 0.25rem 0.6rem; border-radius: 6px; border: 1px solid #0284c7; }
-    .status-badge { font-family: monospace; font-size: 0.8rem; font-weight: bold; background: #064e3b; color: #34d399; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #059669; display: flex; align-items: center; gap: 6px; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; }
-    .target-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    .step-box { background: #0b1120; border: 1px solid #334155; border-radius: 10px; padding: 1.2rem; margin-bottom: 1.2rem; }
-    .step-title { font-weight: bold; font-size: 0.95rem; color: #38bdf8; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
-    .step-badge { background: #0284c7; color: #fff; font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 4px; }
-    input[type="text"], select { width: 100%; background: #030712; border: 1px solid #334155; color: #38bdf8; font-family: monospace; font-size: 0.9rem; padding: 0.6rem 0.8rem; border-radius: 8px; margin-top: 0.4rem; margin-bottom: 0.8rem; outline: none; }
-    input:focus { border-color: #00f2fe; box-shadow: 0 0 10px rgba(0,242,254,0.3); }
-    .btn-submit { background: linear-gradient(90deg, #0284c7, #2563eb); color: #fff; font-weight: bold; font-size: 0.85rem; padding: 0.6rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
-    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
-    .result-box { background: #030712; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem; margin-top: 0.8rem; font-family: monospace; font-size: 0.85rem; line-height: 1.6; color: #e2e8f0; word-break: break-all; }
-    .flag-banner { background: linear-gradient(90deg, #4c0519, #881337); border: 1px solid #f43f5e; color: #ffe4e6; padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: monospace; font-weight: bold; font-size: 1rem; text-align: center; }
-    table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.85rem; }
-    th { background: #1e293b; color: #38bdf8; padding: 0.6rem; text-align: left; border: 1px solid #334155; }
+    body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: #0b1120; border-bottom: 1px solid #334155; padding: 0.8rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .brand { font-size: 1.1rem; font-weight: bold; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+    .nav-links a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; margin-left: 1.2rem; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    main { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; flex: 1; width: 100%; }
+    .card { background: var(--card); border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    footer { background: #0b1120; border-top: 1px solid #1e293b; padding: 1rem; text-align: center; font-size: 0.75rem; color: #64748b; }
+    input[type="text"], input[type="password"], input[type="number"], select, textarea { width: 100%; background: #030712; border: 1px solid #334155; color: #f8fafc; font-family: inherit; font-size: 0.9rem; padding: 0.6rem 0.8rem; border-radius: 6px; margin-top: 0.3rem; margin-bottom: 1rem; outline: none; }
+    input:focus, textarea:focus { border-color: var(--accent); }
+    .btn { background: var(--primary); color: #fff; font-weight: 500; font-size: 0.85rem; padding: 0.6rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+    .btn:hover { background: #0369a1; }
+    .alert { padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.85rem; margin-top: 1rem; line-height: 1.5; }
+    .alert-info { background: #082f49; border: 1px solid #0284c7; color: #bae6fd; }
+    .alert-danger { background: #4c0519; border: 1px solid #e11d48; color: #ffe4e6; }
+    .alert-success { background: #064e3b; border: 1px solid #059669; color: #a7f3d0; }
+    .flag-card { background: linear-gradient(90deg, #4c0519, #881337); border: 1px solid #f43f5e; color: #ffe4e6; padding: 1.2rem; border-radius: 8px; margin-top: 1.5rem; font-family: monospace; font-weight: bold; font-size: 1rem; text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+    th { background: #0f172a; color: #38bdf8; padding: 0.6rem; text-align: left; border: 1px solid #334155; }
     td { padding: 0.6rem; border: 1px solid #1e293b; color: #cbd5e1; }
-    tr:nth-child(even) { background: #030712; }
-    .tip-text { font-size: 0.8rem; color: #94a3b8; line-height: 1.5; margin-bottom: 0.8rem; }
+    tr:nth-child(even) { background: #111827; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="target-header">
-      <div>
-        <span class="target-badge">L17 SRC 真实资产测绘实战</span>
-        <h2 style="margin: 0.4rem 0 0 0; font-size: 1.25rem; color: #f8fafc;">安恒企业黑盒信息收集与隐蔽资产渗透</h2>
-      </div>
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <span class="status-badge"><span class="status-dot"></span> 靶机运行中 (ONLINE)</span>
-        <a href="../../index.html" style="color: #38bdf8; text-decoration: none; font-size: 0.8rem;">返回学习平台 ➔</a>
-      </div>
+  <header>
+    <div class="brand">
+      <span>🛡️</span>
+      <span>安恒科创集团</span>
+      <span style="font-size:0.75rem; background:#082f49; color:#38bdf8; padding:0.1rem 0.4rem; border-radius:4px; border:1px solid #0284c7;">生产环境 V2.4</span>
     </div>
-
-    <div class="target-card">
-      <div style="background:#1e293b;border-left:4px solid #00f2fe;padding:0.75rem 1rem;border-radius:0 8px 8px 0;font-size:0.85rem;color:#cbd5e1;line-height:1.6;margin-bottom:1.5rem;">
-        <strong>🎯 渗透实战作战任务:</strong><br>
-        作为白帽子，你获得了授权对目标企业 <code>corp-security.com</code> 进行黑盒资产测绘。<br>
-        企业主站启用了云加速 CDN 与高防 WAF，但开发人员在某个内部子域名上疏忽遗留了源码备份与敏感配置文件。<br>
-        <strong>通关流程:</strong> 1. 枚举企业子域名并识别真实源站 IP ➔ 2. 使用目录扫描工具探测敏感泄露文件 ➔ 3. 读取配置文件提取数据库凭证与 Flag！
-      </div>
-
-      <!-- 阶段一：子域名资产探测 -->
-      <div class="step-box">
-        <div class="step-title">
-          <span class="step-badge">第 1 步</span> 
-          <span>🌐 企业主域名资产与隐蔽子域名测绘 (Subdomain Recon)</span>
-        </div>
-        <p class="tip-text">输入目标企业主域名（如 <code>corp-security.com</code>），执行 DNS 解析、证书透明度日志 (CT Logs) 与字典碰撞，探测隐蔽子域名资产。</p>
-        
-        <form onsubmit="runSubdomainRecon(event)">
-          <input type="text" id="reconDomain" value="corp-security.com" placeholder="例如: corp-security.com">
-          <button type="submit" class="btn-submit">🔍 启动子域名与 DNS 测绘</button>
-        </form>
-        <div id="subdomainResult" style="margin-top:0.5rem;"></div>
-      </div>
-
-      <!-- 阶段二：敏感目录与源码泄露扫描 -->
-      <div class="step-box" id="step2Box" style="opacity: 0.6; pointer-events: none;">
-        <div class="step-title">
-          <span class="step-badge">第 2 步</span> 
-          <span>📁 目标资产敏感目录与源码泄露深度探测 (Dirsearch / Fuzz)</span>
-        </div>
-        <p class="tip-text">选择在第 1 步中发现的隐蔽子域名或源站资产，探测是否存在常见敏感文件（如 <code>robots.txt</code>、<code>.git/config</code>、<code>.env</code>、<code>/api/v2/config.bak</code>、<code>swagger-ui.html</code>）。</p>
-
-        <form onsubmit="runDirScan(event)">
-          <label style="font-size:0.85rem; color:#cbd5e1;">选择扫描目标资产 (Target Host):</label>
-          <select id="targetHost">
-            <option value="www.corp-security.com">www.corp-security.com (IP: 104.21.45.12 - Cloudflare CDN)</option>
-            <option value="mail.corp-security.com">mail.corp-security.com (IP: 192.168.10.55 - 邮件网关源站)</option>
-            <option value="dev-api.corp-security.com" selected>dev-api.corp-security.com (IP: 192.168.10.88 - 内部测试网关)</option>
-            <option value="s3-backup.corp-security.com">s3-backup.corp-security.com (OSS 存储桶)</option>
-          </select>
-
-          <label style="font-size:0.85rem; color:#cbd5e1;">输入待探测的敏感路径 / 字典 (Path / Wordlist):</label>
-          <input type="text" id="scanPath" value="robots.txt" placeholder="例如: robots.txt 或 .env 或 .git/config 或 /config.bak">
-
-          <button type="submit" class="btn-submit" style="background: linear-gradient(90deg, #059669, #0d9488);">⚡ 发起敏感路径扫描</button>
-        </form>
-        <div id="dirResult" style="margin-top:0.5rem;"></div>
-      </div>
-
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="robots.txt">robots.txt</a>
+      <a href="../../index.html" style="color: #38bdf8;">返回 WebSec 学习平台 ➔</a>
+    </div>
+  </header>
+  <main>
+  <div class="card">
+    <h2 style="margin-top:0; color:#f8fafc; font-size:1.3rem;">🏢 欢迎访问安恒科创集团企业协同门户</h2>
+    <p style="color:#94a3b8; font-size:0.85rem; line-height:1.6;">
+      本系统为集团内部员工协同办公与研发管理入口。外部访客仅能浏览公开资讯。<br>
+      系统安全防护已接入 CDN 加速与 WAF 防护策略。
+    </p>
+    <div class="alert alert-info">
+      <strong>📌 系统公告 (2026-08-20):</strong><br>
+      近期研发部门正在迁移 <code>dev-api</code> 子系统微服务，相关临时配置文件与备份已归档至服务器根目录，请各运维人员注意检查访问控制策略。
     </div>
   </div>
 
-  <script>
-    function escapeHtml(str) {
-      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    }
-
-    function runSubdomainRecon(e) {
-      e.preventDefault();
-      const domain = document.getElementById('reconDomain').value.trim();
-      const res = document.getElementById('subdomainResult');
-      
-      if (domain === 'corp-security.com' || domain.includes('corp-security')) {
-        res.innerHTML = `
-          <div class="result-box">
-            <h4 style="color:#34d399; margin:0 0 0.4rem 0;">✅ 成功命中企业资产指纹库 (共发现 4 个活跃子域名):</h4>
-            <table>
-              <tr><th>子域名 (Subdomain)</th><th>解析 IP / CNAME</th><th>服务状态 / 资产特征</th><th>CDN 判定</th></tr>
-              <tr><td>www.corp-security.com</td><td>104.21.45.12</td><td>200 OK (Nginx 官网门户)</td><td style="color:#f59e0b">Cloudflare CDN</td></tr>
-              <tr><td>mail.corp-security.com</td><td>192.168.10.55</td><td>25/110/443 (SPF 泄露真实源站)</td><td style="color:#34d399">真实源站</td></tr>
-              <tr><td>dev-api.corp-security.com</td><td>192.168.10.88</td><td>8080/HTTP (Spring Boot 内部测试开发网关)</td><td style="color:#34d399">真实源站</td></tr>
-              <tr><td>s3-backup.corp-security.com</td><td>oss-corp.aliyun.com</td><td>403 Forbidden (云存储桶只读策略)</td><td>Aliyun OSS</td></tr>
-            </table>
-            <div style="margin-top:0.6rem; color:#38bdf8; font-size:0.8rem;">
-              💡 <strong>白帽分析报告:</strong> 发现内部开发网关 <code>dev-api.corp-security.com</code> 与 真实源站 <code>192.168.10.88</code>。第 2 步已解锁！请针对该测试网关进行敏感目录与配置文件扫描！
-            </div>
-          </div>
-        `;
-        document.getElementById('step2Box').style.opacity = '1';
-        document.getElementById('step2Box').style.pointerEvents = 'auto';
-      } else {
-        res.innerHTML = '<div class="result-box" style="color:#f87171;">未在资产库中找到该主域名。请尝试输入授权目标域名: <code>corp-security.com</code></div>';
-      }
-    }
-
-    function runDirScan(e) {
-      e.preventDefault();
-      const host = document.getElementById('targetHost').value;
-      const pathInput = document.getElementById('scanPath').value.trim();
-      const res = document.getElementById('dirResult');
-
-      if (host === 'dev-api.corp-security.com') {
-        if (pathInput === 'robots.txt') {
-          res.innerHTML = `
-            <div class="result-box">
-              <h4 style="color:#38bdf8; margin:0 0 0.4rem 0;">📄 HTTP 200 OK - /robots.txt 爬虫协议内容:</h4>
-              <pre>User-agent: *
-Disallow: /admin/login.html
-Disallow: /api/v2/debug_console
-Disallow: /.env
-Disallow: /backup/config.inc.php.bak</pre>
-              <p style="color:#f59e0b; margin:0.4rem 0 0 0; font-size:0.8rem;">
-                ⚠️ <strong>发现敏感禁止爬取路径:</strong> <code>.env</code> 与 <code>/backup/config.inc.php.bak</code>！尝试在上方输入并访问这两个文件提取敏感凭证！
-              </p>
-            </div>
-          `;
-        } else if (pathInput === '.env' || pathInput.includes('.env') || pathInput.includes('config.inc.php.bak') || pathInput.includes('config.bak')) {
-          res.innerHTML = `
-            <div class="result-box" style="border-color:#34d399;">
-              <h4 style="color:#34d399; margin:0 0 0.4rem 0;">🎉 HTTP 200 OK - 成功读取内部核心配置文件 (${escapeHtml(pathInput)}):</h4>
-              <pre># ----------------------------------------------------
-# CORP-SECURITY 内部微服务核心环境变量配置
-# ----------------------------------------------------
-APP_NAME=Enterprise-Recon-Hub
-APP_ENV=development
-APP_DEBUG=true
-APP_URL=http://dev-api.corp-security.com
-
-DB_CONNECTION=mysql
-DB_HOST=192.168.10.88
-DB_PORT=3306
-DB_DATABASE=db_corp_finance
-DB_USERNAME=root
-DB_PASSWORD=CorpSec_Admin_2026_Secret!
-
-AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
-AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-
-# 核心安全审计 Flag 凭据:
-SECURITY_AUDIT_FLAG=FLAG{L17_RECON_ORIGIN_IP_AND_ENV_CONFIG_EXPOSED_8849}</pre>
-              <div class="flag-banner">
-                🚩 恭喜通过完整的资产测绘与敏感信息泄露渗透夺旗！<br>
-                Flag: FLAG{L17_RECON_ORIGIN_IP_AND_ENV_CONFIG_EXPOSED_8849}
-              </div>
-            </div>
-          `;
-        } else {
-          res.innerHTML = `<div class="result-box" style="color:#f43f5e;">HTTP 404 Not Found: <code>${escapeHtml(pathInput)}</code> 不存在。提示: 尝试先扫描 <code>robots.txt</code> 或测试 <code>.env</code> 文件！</div>`;
-        }
-      } else {
-        res.innerHTML = `<div class="result-box" style="color:#94a3b8;">HTTP 403 Forbidden / WAF Blocked: ${escapeHtml(host)} 未发现开放目录。请切换到内部开发测试网关 <code>dev-api.corp-security.com</code> 进行探测！</div>`;
-      }
-    }
-  </script>
+  <div class="card">
+    <h3 style="margin-top:0; color:#38bdf8; font-size:1.05rem;">📰 最新企业动态</h3>
+    <div style="font-size:0.85rem; color:#cbd5e1; space-y-2;">
+      <p>• 集团通过 ISO 27001 信息安全管理体系年度复审认证</p>
+      <p>• 研发中心完成微服务集群架构升级，全面启用环境变量配置隔离</p>
+      <p>• 针对部分公网暴露测试端点，安全运营中心已下发整改通知</p>
+    </div>
+  </div>
+  </main>
+  <footer>
+    <p>© 2026 Enterprise Security Network Hub. All rights reserved. Powered by Nginx/1.18.0 (Ubuntu)</p>
+  </footer>
 </body>
 </html>
