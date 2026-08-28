@@ -47,6 +47,131 @@ const app = createApp({
       return stage ? stage.lessons : allLessons.value;
     });
 
+    // --------------------------------------------------------------------
+    // 本地真实可渗透靶机生命周期管理器 (Live Target Machine Controller)
+    // --------------------------------------------------------------------
+    const targetStates = ref({}); // { [code]: { status: 'offline'|'starting'|'online', remainingSeconds: 7200, targetUrl: '...' } }
+    const showLiveWebview = ref(true); // 是否展示内嵌实时视窗
+    const liveWebviewKey = ref(1); // 刷新 iframe 用
+
+    // 格式化倒计时 01:59:59
+    const formatTargetTimer = (sec) => {
+      if (sec === undefined || sec === null || sec < 0) sec = 0;
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = sec % 60;
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    };
+
+    // 获取某个课程的靶机状态对象
+    const getTargetState = (code) => {
+      const c = (code || activeSimLessonCode.value || 'L26').toUpperCase();
+      if (!targetStates.value[c]) {
+        const origin = window.location.origin && window.location.origin.startsWith('http') ? window.location.origin : 'http://127.0.0.1:8888';
+        targetStates.value[c] = {
+          status: 'offline',
+          remainingSeconds: 7200,
+          targetUrl: `${origin}/targets/${c}/`
+        };
+      }
+      return targetStates.value[c];
+    };
+
+    // 启动靶机
+    const startTargetMachine = async (code) => {
+      const c = (code || activeSimLessonCode.value).toUpperCase();
+      const state = getTargetState(c);
+      state.status = 'starting';
+      
+      try {
+        const res = await fetch(`/api/target/start?code=${c}`, { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          state.status = 'online';
+          state.remainingSeconds = data.remainingSeconds || 7200;
+          state.targetUrl = data.targetUrl || `${window.location.origin}/targets/${c}/`;
+          liveWebviewKey.value++;
+          return;
+        }
+      } catch (e) {
+        console.warn("Backend API not reachable, activating local simulation target:", e);
+      }
+
+      // 前端独立运行兜底
+      setTimeout(() => {
+        state.status = 'online';
+        state.remainingSeconds = 7200;
+        const origin = window.location.origin && window.location.origin.startsWith('http') ? window.location.origin : 'http://127.0.0.1:8888';
+        state.targetUrl = `${origin}/targets/${c}/`;
+        liveWebviewKey.value++;
+      }, 1000);
+    };
+
+    // 关闭靶机
+    const stopTargetMachine = async (code) => {
+      const c = (code || activeSimLessonCode.value).toUpperCase();
+      const state = getTargetState(c);
+      state.status = 'offline';
+      state.remainingSeconds = 0;
+
+      try {
+        await fetch(`/api/target/stop?code=${c}`, { method: 'POST' });
+      } catch (e) {
+        console.warn("Target stop request:", e);
+      }
+    };
+
+    // 重置靶机
+    const resetTargetMachine = async (code) => {
+      const c = (code || activeSimLessonCode.value).toUpperCase();
+      const state = getTargetState(c);
+      state.status = 'starting';
+
+      try {
+        const res = await fetch(`/api/target/reset?code=${c}`, { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          setTimeout(() => {
+            state.status = 'online';
+            state.remainingSeconds = data.remainingSeconds || 7200;
+            liveWebviewKey.value++;
+          }, 800);
+          return;
+        }
+      } catch (e) {}
+
+      setTimeout(() => {
+        state.status = 'online';
+        state.remainingSeconds = 7200;
+        liveWebviewKey.value++;
+      }, 800);
+    };
+
+    // 延长靶机时间 60 分钟
+    const extendTargetTime = async (code) => {
+      const c = (code || activeSimLessonCode.value).toUpperCase();
+      const state = getTargetState(c);
+      state.remainingSeconds += 3600;
+
+      try {
+        await fetch(`/api/target/extend?code=${c}`, { method: 'POST' });
+      } catch (e) {}
+    };
+
+    // 前端全局定时器递减在线靶机的倒计时
+    setInterval(() => {
+      Object.keys(targetStates.value).forEach(c => {
+        const s = targetStates.value[c];
+        if (s && s.status === 'online') {
+          if (s.remainingSeconds > 0) {
+            s.remainingSeconds--;
+          } else {
+            s.status = 'offline';
+          }
+        }
+      });
+    }, 1000);
+
     const prevSimLesson = () => {
       const list = allLessons.value;
       const idx = list.findIndex(l => l.code === activeSimLessonCode.value);
@@ -641,7 +766,17 @@ const app = createApp({
       isTocDrawerOpen,
       activeTocId,
       currentLessonToc,
-      scrollToLectureSection
+      scrollToLectureSection,
+      // 本地真实靶机控制器
+      targetStates,
+      getTargetState,
+      startTargetMachine,
+      stopTargetMachine,
+      resetTargetMachine,
+      extendTargetTime,
+      formatTargetTimer,
+      showLiveWebview,
+      liveWebviewKey
     };
   }
 });

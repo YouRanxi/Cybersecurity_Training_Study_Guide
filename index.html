@@ -302,6 +302,175 @@
                 {{ l.title.replace(/^\d+-/, '') }}
               </div>
             </button>
+        <!-- ============================================================ -->
+        <!-- 🚀 核心重磅：本地真实可渗透靶机控制器 (Live Target Machine Hub) -->
+        <!-- ============================================================ -->
+        <div class="glass-panel p-5 rounded-2xl border-purple-500/50 bg-gradient-to-br from-slate-950 via-slate-900 to-purple-950/30 space-y-4 shadow-2xl relative overflow-hidden">
+          <!-- 装饰发光背景 -->
+          <div class="absolute -right-16 -top-16 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          <!-- 顶部：靶机状态与核心控制按钮行 -->
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 border-b border-purple-900/50 pb-3.5">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-purple-950/80 border border-purple-600/50 flex items-center justify-center text-xl shadow-lg shadow-purple-950">
+                🚀
+              </div>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-bold text-base text-slate-100">{{ activeSimLessonCode }} 本地独立真实靶机实例</h3>
+                  
+                  <!-- 动态状态徽章 -->
+                  <span 
+                    v-if="getTargetState(activeSimLessonCode).status === 'online'" 
+                    class="px-3 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-950/90 text-emerald-400 border border-emerald-500 flex items-center gap-1.5 shadow-sm shadow-emerald-950">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 🟢 ONLINE 靶机运行中
+                  </span>
+                  <span 
+                    v-else-if="getTargetState(activeSimLessonCode).status === 'starting'" 
+                    class="px-3 py-0.5 rounded-full text-xs font-mono font-bold bg-amber-950/90 text-amber-300 border border-amber-500 flex items-center gap-1.5 animate-pulse">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> 🟡 STARTING 靶机部署中...
+                  </span>
+                  <span 
+                    v-else 
+                    class="px-3 py-0.5 rounded-full text-xs font-mono font-bold bg-slate-900 text-slate-400 border border-slate-700 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-slate-500"></span> ⚪ OFFLINE 靶机未开启
+                  </span>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">开启后将在本机分配真实 HTTP 独立端口端点，支持使用本机真实 Burp Suite、Sqlmap、浏览器直接发起渗透！</p>
+              </div>
+            </div>
+
+            <!-- 控制按钮群 -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- 启动靶机按钮 -->
+              <button 
+                v-if="getTargetState(activeSimLessonCode).status !== 'online'"
+                @click="startTargetMachine(activeSimLessonCode)"
+                :disabled="getTargetState(activeSimLessonCode).status === 'starting'"
+                class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white text-xs font-bold transition-all shadow-lg shadow-emerald-950 flex items-center gap-2 cursor-pointer disabled:opacity-50">
+                <span class="text-sm">🚀</span>
+                <span>{{ getTargetState(activeSimLessonCode).status === 'starting' ? '正在部署沙箱...' : '一键启动靶机' }}</span>
+              </button>
+
+              <!-- 在线状态下的控制群 -->
+              <template v-else>
+                <!-- 倒计时徽章 -->
+                <div class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-purple-700/60 text-purple-300 font-mono text-xs font-bold flex items-center gap-1.5">
+                  <span>⏱️ 剩余:</span>
+                  <span class="text-amber-300 font-bold">{{ formatTargetTimer(getTargetState(activeSimLessonCode).remainingSeconds) }}</span>
+                </div>
+
+                <!-- 延长 1 小时 -->
+                <button 
+                  @click="extendTargetTime(activeSimLessonCode)"
+                  class="px-3 py-1.5 rounded-xl bg-purple-950/80 hover:bg-purple-900 text-purple-200 border border-purple-700 text-xs font-medium transition-all cursor-pointer"
+                  title="延长靶机运行时间 60 分钟">
+                  ⏱️ +60分钟
+                </button>
+
+                <!-- 重置靶机 -->
+                <button 
+                  @click="resetTargetMachine(activeSimLessonCode)"
+                  class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 text-xs font-medium transition-all cursor-pointer"
+                  title="清空污染数据并重置漏洞环境">
+                  🔄 重置靶机
+                </button>
+
+                <!-- 关闭靶机 -->
+                <button 
+                  @click="stopTargetMachine(activeSimLessonCode)"
+                  class="px-3.5 py-1.5 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-700 text-xs font-bold transition-all cursor-pointer"
+                  title="关闭靶机并释放端口">
+                  🛑 关闭靶机
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- 靶机在线时的专属访问通道与双模入口 -->
+          <div v-if="getTargetState(activeSimLessonCode).status === 'online'" class="space-y-3 pt-1">
+            <div class="p-3.5 rounded-xl bg-black/70 border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-1 min-w-0 flex-1">
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                  <span class="text-emerald-400 font-bold">🌐 本地真实靶场直达链接 (Target URL):</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">已就绪</span>
+                </div>
+                <div class="font-mono text-xs text-emerald-300 font-bold break-all select-all flex items-center gap-2">
+                  <span>{{ getTargetState(activeSimLessonCode).targetUrl }}</span>
+                </div>
+              </div>
+
+              <!-- 快捷操作按钮 -->
+              <div class="flex items-center gap-2 shrink-0 flex-wrap">
+                <button 
+                  @click="copyToClipboard(getTargetState(activeSimLessonCode).targetUrl)" 
+                  class="px-3.5 py-2 bg-slate-800 hover:bg-emerald-600 hover:text-white text-emerald-300 rounded-xl border border-slate-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                  <span>📋</span> 复制链接
+                </button>
+
+                <a 
+                  :href="getTargetState(activeSimLessonCode).targetUrl" 
+                  target="_blank" 
+                  class="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-md shadow-cyan-950">
+                  <span>↗️</span> 在新标签页打开靶场
+                </a>
+
+                <button 
+                  @click="showLiveWebview = !showLiveWebview"
+                  class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-xl border border-slate-700 text-xs font-medium transition-all cursor-pointer">
+                  {{ showLiveWebview ? '隐藏内嵌视窗 ✕' : '展开内嵌视窗 🖥️' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- 内嵌实时靶场视窗 (Live Webview iframe) -->
+            <div v-if="showLiveWebview" class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden shadow-2xl space-y-0">
+              <div class="p-2.5 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                  <div class="flex gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block"></span>
+                  </div>
+                  <span class="font-mono text-slate-300 text-[11px]">🖥️ 内嵌实时靶场视窗 (Live Sandboxed Target Browser)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button @click="liveWebviewKey++" class="text-slate-400 hover:text-cyan-300 text-[11px] flex items-center gap-1 cursor-pointer">
+                    <span>🔄</span> 刷新视窗
+                  </button>
+                </div>
+              </div>
+              <iframe 
+                :key="liveWebviewKey"
+                :src="getTargetState(activeSimLessonCode).targetUrl" 
+                class="w-full h-80 sm:h-96 border-none bg-slate-950" 
+                loading="lazy">
+              </iframe>
+            </div>
+
+            <!-- 本机真实工具渗透指引提示 -->
+            <div class="p-3 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs text-purple-200 flex items-start gap-2.5">
+              <span class="text-base">💡</span>
+              <div class="space-y-0.5 leading-relaxed">
+                <strong class="text-purple-300">本机真实工具渗透打靶指引:</strong>
+                <p class="text-slate-400 text-[11px]">
+                  靶机已成功监听在 <code>{{ getTargetState(activeSimLessonCode).targetUrl }}</code>。你可以打开本机真实的 <strong>Burp Suite</strong> 配置浏览器代理抓包，或直接在命令行中运行 <code>sqlmap -u "{{ getTargetState(activeSimLessonCode).targetUrl }}view.php?id=1" --dbs</code>、编写 Python 脚本发起真实测试！突破获取 Flag 后，在下方输入框提交判题即可夺旗！
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 靶机离线时的提示 -->
+          <div v-else class="p-4 rounded-xl bg-black/40 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2.5 text-slate-400">
+              <span class="text-lg">🔒</span>
+              <span>靶机当前处于离线状态。点击右上角【🚀 一键启动靶机】即可分配独立本地端点并开放网络访问。</span>
+            </div>
+            <button 
+              @click="startTargetMachine(activeSimLessonCode)" 
+              class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs whitespace-nowrap shadow-md shadow-purple-950 cursor-pointer">
+              立即启动 ➔
+            </button>
           </div>
         </div>
 
@@ -1305,9 +1474,75 @@
 
           </div>
 
-          <!-- TAB 2: 武器打靶实操与 Flag 提交 (含任务简报) -->
+          <!-- TAB 2: 武器打靶实操与 Flag 提交 (含任务简报与真实靶机控制) -->
           <div v-if="activeLessonTab === 'sandbox'" class="space-y-4">
             
+            <!-- 🚀 弹窗内独立真实靶机控制条 (Live Target Controller Bar) -->
+            <div class="p-4 rounded-xl bg-gradient-to-r from-purple-950/40 via-slate-900 to-purple-950/40 border border-purple-500/40 space-y-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="text-base">🚀</span>
+                  <span class="font-bold text-sm text-slate-100">{{ activeLesson.code }} 本地真实靶机实例:</span>
+                  <span 
+                    v-if="getTargetState(activeLesson.code).status === 'online'" 
+                    class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-600 font-bold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 🟢 ONLINE 运行中
+                  </span>
+                  <span 
+                    v-else-if="getTargetState(activeLesson.code).status === 'starting'" 
+                    class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-600 font-bold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> 🟡 正在部署...
+                  </span>
+                  <span 
+                    v-else 
+                    class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-slate-900 text-slate-400 border border-slate-700">
+                    ⚪ OFFLINE 未开启
+                  </span>
+                </div>
+
+                <!-- 控制按钮 -->
+                <div class="flex items-center gap-2">
+                  <button 
+                    v-if="getTargetState(activeLesson.code).status !== 'online'"
+                    @click="startTargetMachine(activeLesson.code)"
+                    class="px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg font-bold text-xs shadow-md shadow-emerald-950 flex items-center gap-1.5 cursor-pointer">
+                    <span>🚀</span> 启动靶机
+                  </button>
+                  <template v-else>
+                    <span class="font-mono text-xs text-amber-300 font-bold bg-black/60 px-2 py-1 rounded border border-slate-700">
+                      ⏱️ {{ formatTargetTimer(getTargetState(activeLesson.code).remainingSeconds) }}
+                    </span>
+                    <button 
+                      @click="extendTargetTime(activeLesson.code)"
+                      class="px-2.5 py-1 bg-purple-950 hover:bg-purple-900 text-purple-200 rounded-lg text-xs border border-purple-700 cursor-pointer">
+                      +60分
+                    </button>
+                    <button 
+                      @click="stopTargetMachine(activeLesson.code)"
+                      class="px-2.5 py-1 bg-rose-950 hover:bg-rose-900 text-rose-300 rounded-lg text-xs font-bold border border-rose-700 cursor-pointer">
+                      关闭
+                    </button>
+                  </template>
+                </div>
+              </div>
+
+              <!-- 在线时展示靶场链接 -->
+              <div v-if="getTargetState(activeLesson.code).status === 'online'" class="p-2.5 rounded-lg bg-black/60 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                <div class="font-mono text-emerald-300 truncate select-all flex items-center gap-1.5">
+                  <span class="text-slate-400">🔗 靶机链接:</span>
+                  <strong>{{ getTargetState(activeLesson.code).targetUrl }}</strong>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <button @click="copyToClipboard(getTargetState(activeLesson.code).targetUrl)" class="px-2.5 py-1 bg-slate-800 hover:bg-emerald-600 hover:text-white text-emerald-300 rounded text-[11px] border border-slate-700">
+                    复制链接 📋
+                  </button>
+                  <a :href="getTargetState(activeLesson.code).targetUrl" target="_blank" class="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-[11px] font-bold">
+                    在新窗口打开 ↗
+                  </a>
+                </div>
+              </div>
+            </div>
+
             <!-- 任务简报卡片 -->
             <div class="p-4 rounded-xl bg-purple-950/20 border border-purple-800/60 space-y-3">
               <div class="flex items-center justify-between border-b border-purple-900/40 pb-2">
